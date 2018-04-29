@@ -1,10 +1,7 @@
 package com.elvotra.clean.presentation.ui.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,22 +10,19 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.elvotra.clean.R;
-import com.elvotra.clean.presentation.model.PostViewItem;
-import com.elvotra.clean.presentation.presenter.PostsPresenter;
-import com.elvotra.clean.presentation.ui.activities.PostDetailsActivity;
-import com.elvotra.clean.presentation.ui.adapters.PostsRecyclerAdapter;
+import com.elvotra.clean.presentation.model.PostDetailsViewItem;
+import com.elvotra.clean.presentation.presenter.PostDetailsPresenter;
+import com.elvotra.clean.presentation.ui.adapters.CommentsRecyclerAdapter;
 import com.elvotra.clean.presentation.ui.widgets.ScrollChildSwipeRefreshLayout;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class PostsListFragment extends Fragment implements PostsPresenter.View {
+public class PostDetailsFragment extends Fragment implements PostDetailsPresenter.View {
 
-    private PostsPresenter postsPresenter;
+    private PostDetailsPresenter postDetailsPresenter;
 
-    private PostsRecyclerAdapter postsRecyclerAdapter;
+    private CommentsRecyclerAdapter commentsRecyclerAdapter;
 
     @BindView(R.id.fragment_posts_list_recycler_view)
     RecyclerView postsRecyclerView;
@@ -37,11 +31,11 @@ public class PostsListFragment extends Fragment implements PostsPresenter.View {
     @BindView(R.id.refresh_layout)
     ScrollChildSwipeRefreshLayout swipeRefreshLayout;
 
-    public PostsListFragment() {
+    public PostDetailsFragment() {
     }
 
-    public static PostsListFragment newInstance() {
-        PostsListFragment fragment = new PostsListFragment();
+    public static PostDetailsFragment newInstance() {
+        PostDetailsFragment fragment = new PostDetailsFragment();
         return fragment;
     }
 
@@ -62,22 +56,6 @@ public class PostsListFragment extends Fragment implements PostsPresenter.View {
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         postsRecyclerView.setLayoutManager(mLayoutManager);
 
-        // Set up progress indicator
-        swipeRefreshLayout.setColorSchemeColors(
-                ContextCompat.getColor(getActivity(), R.color.colorPrimary),
-                ContextCompat.getColor(getActivity(), R.color.colorAccent),
-                ContextCompat.getColor(getActivity(), R.color.colorPrimaryDark)
-        );
-        // Set the scrolling view in the custom SwipeRefreshLayout.
-        swipeRefreshLayout.setScrollUpChild(postsRecyclerView);
-
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                postsPresenter.loadPosts();
-            }
-        });
-
         return rootView;
 
     }
@@ -85,38 +63,23 @@ public class PostsListFragment extends Fragment implements PostsPresenter.View {
     @Override
     public void onResume() {
         super.onResume();
-        postsPresenter.resume();
+        postDetailsPresenter.resume();
     }
 
     @Override
-    public void setPresenter(PostsPresenter presenter) {
-        postsPresenter = presenter;
+    public void setPresenter(PostDetailsPresenter presenter) {
+        postDetailsPresenter = presenter;
     }
 
     @Override
-    public void showPostsList(List<PostViewItem> postViewItems) {
+    public void showPostDetails(PostDetailsViewItem postDetailsViewItem) {
         mLblMessage.setVisibility(View.GONE);
 
         postsRecyclerView.setVisibility(View.VISIBLE);
 
-        postsRecyclerAdapter = new PostsRecyclerAdapter(getContext(), postViewItems,
-                new PostsRecyclerAdapter.PostsListItemClickListener() {
+        commentsRecyclerAdapter = new CommentsRecyclerAdapter(getContext(), postDetailsViewItem.getComments());
 
-                    @Override
-                    public void onPostClicked(int postId) {
-                        postsPresenter.openPostDetails(postId);
-                    }
-
-                });
-
-        postsRecyclerView.setAdapter(postsRecyclerAdapter);
-    }
-
-    @Override
-    public void showPostDetails(int postId) {
-        Intent i = new Intent(getActivity(), PostDetailsActivity.class);
-        i.putExtra(PostDetailsActivity.POST_ID, postId);
-        startActivity(i);
+        postsRecyclerView.setAdapter(commentsRecyclerAdapter);
     }
 
     @Override

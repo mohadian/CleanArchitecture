@@ -6,7 +6,9 @@ import com.elvotra.clean.data.remote.model.PostCommentData;
 import com.elvotra.clean.data.remote.model.PostData;
 import com.elvotra.clean.data.remote.model.UserData;
 import com.elvotra.clean.data.remote.model.mapper.PostsResponseMapper;
+import com.elvotra.clean.domain.model.Comment;
 import com.elvotra.clean.domain.model.Post;
+import com.elvotra.clean.domain.model.User;
 import com.elvotra.clean.domain.repository.PostsRepository;
 
 import java.util.List;
@@ -128,7 +130,27 @@ public class TypicodeRemoteDataSource implements PostsRepository {
     }
 
     @Override
-    public void getPost(@NonNull String postId, @NonNull GetPostCallback callback) {
+    public void getPost(@NonNull int postId, final @NonNull LoadPostCallback callback) {
+
+    }
+
+    @Override
+    public void deleteAllData() {
+
+    }
+
+    @Override
+    public void savePost(Post post) {
+
+    }
+
+    @Override
+    public void saveUser(User user) {
+
+    }
+
+    @Override
+    public void saveComment(Comment comment) {
 
     }
 }

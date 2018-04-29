@@ -1,35 +1,40 @@
 package com.elvotra.clean.presentation.ui.adapters;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.elvotra.clean.R;
 import com.elvotra.clean.presentation.model.PostViewItem;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.bumptech.glide.request.RequestOptions.circleCropTransform;
+
 public class PostsRecyclerAdapter
         extends RecyclerView.Adapter<PostsRecyclerAdapter.ViewHolder> {
 
-    public interface MovieListItemClickListener {
+    public interface PostsListItemClickListener {
 
-        void onMovieClicked(long movieId);
+        void onPostClicked(int postId);
 
     }
 
     private List<PostViewItem> postViewItems;
-    private PostsRecyclerAdapter.MovieListItemClickListener listener;
+    private PostsListItemClickListener listener;
+    private Context context;
 
-    public class ViewHolder extends RecyclerView.ViewHolder
+    class ViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
 
         @BindView(R.id.list_item_post_user_avatar)
@@ -54,15 +59,15 @@ public class PostsRecyclerAdapter
         @Override
         public void onClick(View view) {
 
-            listener.onMovieClicked(postViewItems.get(getAdapterPosition()).getId());
+            listener.onPostClicked(postViewItems.get(getAdapterPosition()).getId());
 
         }
 
     }
 
-    public PostsRecyclerAdapter(List<PostViewItem> postViewItems,
-                                PostsRecyclerAdapter.MovieListItemClickListener listener) {
-
+    public PostsRecyclerAdapter(Context context, List<PostViewItem> postViewItems,
+                                PostsListItemClickListener listener) {
+        this.context = context;
         this.postViewItems = postViewItems;
         this.listener = listener;
 
@@ -81,17 +86,16 @@ public class PostsRecyclerAdapter
 
     @Override
     public void onBindViewHolder(PostsRecyclerAdapter.ViewHolder holder, int position) {
-
-        Picasso.get()
+        Glide.with(context)
                 .load(postViewItems.get(position).getAvatar())
-                .resize(100, 150)
-                .centerCrop()
+                .apply(circleCropTransform())
                 .into(holder.userAvatar);
         holder.postTitle.setText(Html.fromHtml(postViewItems.get(position).getTitle()));
         holder.postBody.setText(postViewItems.get(position).getBody());
         holder.postUser.setText(postViewItems.get(position).getUser());
-        holder.postCommentsCount.setText("" + postViewItems.get(position).getCommentsCount());
-
+        String commentsCount = postViewItems.get(position).getCommentsCount();
+        String comments = (TextUtils.isEmpty(commentsCount)) ? context.getString(R.string.no_comments) : context.getString(R.string.posts_comments, commentsCount);
+        holder.postCommentsCount.setText(comments);
     }
 
     @Override

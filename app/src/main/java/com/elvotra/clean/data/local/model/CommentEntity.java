@@ -2,18 +2,12 @@ package com.elvotra.clean.data.local.model;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.PrimaryKey;
 
-import static android.arch.persistence.room.ForeignKey.CASCADE;
-
-@Entity(tableName = "comments",
-        primaryKeys = {"comments_id"},
-        foreignKeys = @ForeignKey(entity = PostEntity.class,
-                parentColumns = "posts_id",
-                childColumns = "post_id",
-                onDelete = CASCADE))
+@Entity(tableName = "comments")
 public class CommentEntity {
 
+    @PrimaryKey
     @ColumnInfo(name = "comments_id")
     private int id;
 

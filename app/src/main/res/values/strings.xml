@@ -5,4 +5,6 @@
     <string name="loading_tasks_error">Loading Failed</string>
     <string name="title_activity_posts">Posts</string>
     <string name="no_posts">No post available</string>
+    <string name="no_comments">No comment</string>
+    <string name="posts_comments">Comments: %s</string>
 </resources>

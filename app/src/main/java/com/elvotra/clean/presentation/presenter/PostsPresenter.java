@@ -14,7 +14,7 @@ public interface PostsPresenter extends BasePresenter {
 
         void showPostsList(List<PostViewItem> postViewItems);
 
-        void showPostDetails(long postId);
+        void showPostDetails(int postId);
 
         void showNoResults();
 
@@ -24,6 +24,6 @@ public interface PostsPresenter extends BasePresenter {
 
     void loadPosts();
 
-    void openPostDetails(long postId);
+    void openPostDetails(int postId);
 
 }
