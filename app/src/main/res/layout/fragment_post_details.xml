@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    app:behavior_overlapTop="30dp"
     tools:context=".presentation.ui.activities.PostDetailsActivity"
     tools:showIn="@layout/activity_post_details">
 
