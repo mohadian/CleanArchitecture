@@ -13,8 +13,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.elvotra.clean.R;
+import com.elvotra.clean.presentation.contract.PostsContract;
 import com.elvotra.clean.presentation.model.PostViewItem;
-import com.elvotra.clean.presentation.presenter.IPostsPresenter;
 import com.elvotra.clean.presentation.ui.activities.PostDetailsActivity;
 import com.elvotra.clean.presentation.ui.adapters.PostsRecyclerAdapter;
 import com.elvotra.clean.presentation.ui.widgets.ScrollChildSwipeRefreshLayout;
@@ -26,9 +26,9 @@ import butterknife.ButterKnife;
 
 import static com.elvotra.clean.presentation.ui.activities.PostDetailsActivity.POST_ID;
 
-public class PostsListFragment extends Fragment implements IPostsPresenter.View {
+public class PostsListFragment extends Fragment implements PostsContract.View {
 
-    private IPostsPresenter postsPresenter;
+    private PostsContract.IPostsPresenter postsPresenter;
 
     private PostsRecyclerAdapter postsRecyclerAdapter;
 
@@ -91,7 +91,7 @@ public class PostsListFragment extends Fragment implements IPostsPresenter.View 
     }
 
     @Override
-    public void setPresenter(IPostsPresenter presenter) {
+    public void setPresenter(PostsContract.IPostsPresenter presenter) {
         postsPresenter = presenter;
     }
 

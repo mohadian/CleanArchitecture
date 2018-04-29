@@ -4,16 +4,16 @@ import com.elvotra.clean.domain.executor.IExecutor;
 import com.elvotra.clean.domain.executor.IMainThread;
 import com.elvotra.clean.domain.model.Post;
 import com.elvotra.clean.domain.repository.IPostsRepository;
-import com.elvotra.clean.domain.usecase.IGetPostUseCase;
 import com.elvotra.clean.domain.usecase.GetPostUseCase;
+import com.elvotra.clean.domain.usecase.IGetPostUseCase;
+import com.elvotra.clean.presentation.contract.PostDetailsContract;
 import com.elvotra.clean.presentation.model.PostDetailsViewItem;
 import com.elvotra.clean.presentation.model.mapper.PostDetailsViewItemMapper;
-import com.elvotra.clean.presentation.presenter.IPostDetailsPresenter;
-import com.elvotra.clean.presentation.presenter.base.AbstractPresenter;
+import com.elvotra.clean.presentation.contract.AbstractPresenter;
 
-public class PostDetailsPresenter extends AbstractPresenter implements IPostDetailsPresenter, IGetPostUseCase.Callback {
+public class PostDetailsPresenter extends AbstractPresenter implements PostDetailsContract.IPostDetailsPresenter, IGetPostUseCase.Callback {
 
-    private View view;
+    private PostDetailsContract.View view;
 
     private IPostsRepository IPostsRepository;
 
@@ -23,7 +23,7 @@ public class PostDetailsPresenter extends AbstractPresenter implements IPostDeta
             int postId,
             IExecutor IExecutor,
             IMainThread IMainThread,
-            View view,
+            PostDetailsContract.View view,
             IPostsRepository repository) {
         super(IExecutor, IMainThread);
         this.postId = postId;
@@ -66,16 +66,6 @@ public class PostDetailsPresenter extends AbstractPresenter implements IPostDeta
         );
 
         getPostsUseCase.execute();
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void stop() {
-
     }
 
     @Override

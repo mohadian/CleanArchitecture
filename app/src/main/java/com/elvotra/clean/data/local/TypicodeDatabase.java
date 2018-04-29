@@ -9,7 +9,7 @@ import com.elvotra.clean.data.local.model.CommentEntity;
 import com.elvotra.clean.data.local.model.PostEntity;
 import com.elvotra.clean.data.local.model.UserEntity;
 
-@Database(entities = {PostEntity.class, UserEntity.class, CommentEntity.class}, version = 2)
+@Database(entities = {PostEntity.class, UserEntity.class, CommentEntity.class}, version = 2, exportSchema = false)
 public abstract class TypicodeDatabase extends RoomDatabase {
 
     private static TypicodeDatabase INSTANCE;

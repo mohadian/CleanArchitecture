@@ -1,4 +1,4 @@
-package com.elvotra.clean.presentation.presenter.base;
+package com.elvotra.clean.presentation.contract;
 
 import com.elvotra.clean.domain.executor.IExecutor;
 import com.elvotra.clean.domain.executor.IMainThread;

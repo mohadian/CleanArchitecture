@@ -27,7 +27,7 @@ import com.elvotra.clean.data.local.TypicodeLocalDataSource;
 import com.elvotra.clean.data.remote.TypicodeRemoteDataSource;
 import com.elvotra.clean.data.repository.PostsRepositoryImp;
 import com.elvotra.clean.domain.executor.ThreadExecutor;
-import com.elvotra.clean.presentation.presenter.IPostDetailsPresenter;
+import com.elvotra.clean.presentation.contract.PostDetailsContract.IPostDetailsPresenter;
 import com.elvotra.clean.presentation.presenter.PostDetailsPresenter;
 import com.elvotra.clean.presentation.ui.fragments.PostDetailsFragment;
 import com.elvotra.clean.threading.AppExecutors;
@@ -116,7 +116,7 @@ public class PostDetailsActivity extends AppCompatActivity implements PostDetail
     @Override
     public void updateToolbar(String avatarUrl, String username) {
         Glide.with(this)
-        .asBitmap()
+                .asBitmap()
                 .load(avatarUrl)
                 .apply(RequestOptions.circleCropTransform())
                 .into(new SimpleTarget<Bitmap>() {
