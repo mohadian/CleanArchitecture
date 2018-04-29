@@ -5,9 +5,10 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
-@Entity(tableName = "users", primaryKeys = {"users_id"})
+@Entity(tableName = "users")
 public class UserEntity {
 
+    @PrimaryKey
     @ColumnInfo(name = "users_id")
     private int id;
 

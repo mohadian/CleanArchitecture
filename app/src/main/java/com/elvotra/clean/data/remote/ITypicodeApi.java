@@ -9,7 +9,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.GET;
 
-public interface TypicodeApi {
+public interface ITypicodeApi {
 
     @GET("posts")
     Call<List<PostData>> getPosts();

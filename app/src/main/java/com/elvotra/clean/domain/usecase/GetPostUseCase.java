@@ -4,32 +4,35 @@ import com.elvotra.clean.domain.executor.IExecutor;
 import com.elvotra.clean.domain.executor.IMainThread;
 import com.elvotra.clean.domain.model.Post;
 import com.elvotra.clean.domain.repository.IPostsRepository;
-import com.elvotra.clean.domain.usecase.IGetPostsUseCase;
+import com.elvotra.clean.domain.usecase.IGetPostUseCase;
 import com.elvotra.clean.domain.usecase.base.AbstractUseCase;
 
-import java.util.List;
-
-public class GetPostsUseCase extends AbstractUseCase implements IGetPostsUseCase {
-    IGetPostsUseCase.Callback callback;
+public class GetPostUseCase extends AbstractUseCase implements IGetPostUseCase {
+    IGetPostUseCase.Callback callback;
     IPostsRepository repository;
+    int postId;
 
-    public GetPostsUseCase(IExecutor threadIExecutor,
-                           IMainThread IMainThread,
-                           Callback callback, IPostsRepository repository) {
+    public GetPostUseCase(
+            int postId,
+            IExecutor threadIExecutor,
+            IMainThread IMainThread,
+            IGetPostUseCase.Callback callback,
+            IPostsRepository repository) {
         super(threadIExecutor, IMainThread);
+        this.postId = postId;
         this.callback = callback;
         this.repository = repository;
     }
 
     @Override
     public void run() {
-        repository.getPosts(new IPostsRepository.LoadPostsCallback() {
+        repository.getPost(postId, new IPostsRepository.LoadPostCallback() {
             @Override
-            public void onPostsLoaded(final List<Post> posts) {
+            public void onPostLoaded(final Post post) {
                 IMainThread.post(new Runnable() {
                     @Override
                     public void run() {
-                        callback.onPostsRetrieved(posts);
+                        callback.onPostRetrieved(post);
                     }
                 });
             }
@@ -45,4 +48,5 @@ public class GetPostsUseCase extends AbstractUseCase implements IGetPostsUseCase
             }
         });
     }
+
 }

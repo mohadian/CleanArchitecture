@@ -1,5 +1,7 @@
 package com.elvotra.clean.domain.model;
 
+import java.util.List;
+
 public class Post {
     private int id;
 
@@ -9,14 +11,14 @@ public class Post {
 
     private String body;
 
-    private int commentsCount;
+    private List<Comment> comments;
 
-    public Post(int id, User user, String title, String body, int commentsCount) {
+    public Post(int id, User user, String title, String body, List<Comment> comments) {
         this.id = id;
         this.user = user;
         this.title = title;
         this.body = body;
-        this.commentsCount = commentsCount;
+        this.comments = comments;
     }
 
     public int getId() {
@@ -35,7 +37,7 @@ public class Post {
         return body;
     }
 
-    public int getCommentsCount() {
-        return commentsCount;
+    public List<Comment> getComments() {
+        return comments;
     }
 }

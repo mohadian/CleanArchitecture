@@ -6,8 +6,10 @@ import com.elvotra.clean.data.remote.model.PostCommentData;
 import com.elvotra.clean.data.remote.model.PostData;
 import com.elvotra.clean.data.remote.model.UserData;
 import com.elvotra.clean.data.remote.model.mapper.PostsResponseMapper;
+import com.elvotra.clean.domain.model.Comment;
 import com.elvotra.clean.domain.model.Post;
-import com.elvotra.clean.domain.repository.PostsRepository;
+import com.elvotra.clean.domain.model.User;
+import com.elvotra.clean.domain.repository.IPostsRepository;
 
 import java.util.List;
 
@@ -15,7 +17,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class TypicodeRemoteDataSource implements PostsRepository {
+public class TypicodeRemoteDataSource implements IPostsRepository {
 
     public interface LoadUsersCallback {
 
@@ -73,7 +75,7 @@ public class TypicodeRemoteDataSource implements PostsRepository {
     }
 
     private void fetchPosts(@NonNull final LoadPostsCallback callback) {
-        TypicodeApi client = TypicodeService.createService(TypicodeApi.class);
+        ITypicodeApi client = TypicodeService.createService(ITypicodeApi.class);
 
         Call<List<PostData>> call = client.getPosts();
         call.enqueue(new Callback<List<PostData>>() {
@@ -92,7 +94,7 @@ public class TypicodeRemoteDataSource implements PostsRepository {
     }
 
     private void fetchUsers(final LoadUsersCallback loadUsersCallback) {
-        TypicodeApi client = TypicodeService.createService(TypicodeApi.class);
+        ITypicodeApi client = TypicodeService.createService(ITypicodeApi.class);
 
         Call<List<UserData>> call = client.getUsers();
         call.enqueue(new Callback<List<UserData>>() {
@@ -110,7 +112,7 @@ public class TypicodeRemoteDataSource implements PostsRepository {
     }
 
     private void fetchComments(final LoadPostCommentsCallback postCommentsCallback) {
-        TypicodeApi client = TypicodeService.createService(TypicodeApi.class);
+        ITypicodeApi client = TypicodeService.createService(ITypicodeApi.class);
 
         Call<List<PostCommentData>> call = client.getComments();
         call.enqueue(new Callback<List<PostCommentData>>() {
@@ -128,7 +130,27 @@ public class TypicodeRemoteDataSource implements PostsRepository {
     }
 
     @Override
-    public void getPost(@NonNull String postId, @NonNull GetPostCallback callback) {
+    public void getPost(@NonNull int postId, final @NonNull LoadPostCallback callback) {
+
+    }
+
+    @Override
+    public void deleteAllData() {
+
+    }
+
+    @Override
+    public void savePost(Post post) {
+
+    }
+
+    @Override
+    public void saveUser(User user) {
+
+    }
+
+    @Override
+    public void saveComment(Comment comment) {
 
     }
 }

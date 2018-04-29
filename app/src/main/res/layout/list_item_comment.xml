@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/list_item_post_user_avatar"
+        android:layout_width="@dimen/comment_item_avatar_size"
+        android:layout_height="@dimen/comment_item_avatar_size"
+        android:layout_alignParentTop="true"
+        android:layout_margin="@dimen/comment_item_margin"
+        android:src="@android:drawable/sym_def_app_icon" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="@dimen/comment_item_margin"
+        android:layout_toEndOf="@id/list_item_post_user_avatar"
+        android:layout_toRightOf="@id/list_item_post_user_avatar"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/list_item_comment_user"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/comment_item_margin"
+            android:layout_marginEnd="@dimen/comment_item_margin"
+            android:layout_marginLeft="@dimen/comment_item_margin"
+            android:layout_marginRight="@dimen/comment_item_margin"
+            android:layout_marginStart="@dimen/comment_item_margin"
+            android:textColor="#000000"
+            style="@style/label_medium_text_bold"
+            tools:text="User" />
+
+        <TextView
+            android:id="@+id/list_item_comment_body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/comment_item_margin"
+            android:layout_marginEnd="@dimen/comment_item_margin"
+            android:layout_marginLeft="@dimen/comment_item_margin"
+            android:layout_marginRight="@dimen/comment_item_margin"
+            android:layout_marginStart="@dimen/comment_item_margin"
+            style="@style/label_medium_text"
+            tools:text="Body" />
+    </LinearLayout>
+
+
+</RelativeLayout>

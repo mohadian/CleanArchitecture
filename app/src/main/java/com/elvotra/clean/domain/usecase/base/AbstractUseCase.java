@@ -1,19 +1,19 @@
 package com.elvotra.clean.domain.usecase.base;
 
-import com.elvotra.clean.domain.executor.Executor;
-import com.elvotra.clean.domain.executor.MainThread;
+import com.elvotra.clean.domain.executor.IExecutor;
+import com.elvotra.clean.domain.executor.IMainThread;
 
-public abstract class AbstractUseCase implements UseCase {
+public abstract class AbstractUseCase implements IUseCase {
 
-    protected Executor threadExecutor;
-    protected MainThread mainThread;
+    protected IExecutor threadIExecutor;
+    protected IMainThread IMainThread;
 
     protected volatile boolean isCanceled;
     protected volatile boolean isRunning;
 
-    public AbstractUseCase(Executor threadExecutor, MainThread mainThread) {
-        this.threadExecutor = threadExecutor;
-        this.mainThread = mainThread;
+    public AbstractUseCase(IExecutor threadIExecutor, IMainThread IMainThread) {
+        this.threadIExecutor = threadIExecutor;
+        this.IMainThread = IMainThread;
     }
 
     public abstract void run();
@@ -38,7 +38,7 @@ public abstract class AbstractUseCase implements UseCase {
         this.isRunning = true;
 
         // start running this interactor in a background thread
-        threadExecutor.execute(this);
+        threadIExecutor.execute(this);
     }
 
 }

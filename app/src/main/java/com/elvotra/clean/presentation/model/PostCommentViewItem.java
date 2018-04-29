@@ -1,22 +1,18 @@
-package com.elvotra.clean.domain.model;
+package com.elvotra.clean.presentation.model;
 
-public class Comment {
-    private int postId;
+public class PostCommentViewItem {
     private int id;
     private String name;
     private String email;
+    private String avatar;
     private String body;
 
-    public Comment(int postId, int id, String name, String email, String body) {
-        this.postId = postId;
+    public PostCommentViewItem(int id, String name, String email, String avatar, String body) {
         this.id = id;
         this.name = name;
         this.email = email;
+        this.avatar = avatar;
         this.body = body;
-    }
-
-    public int getPostId() {
-        return postId;
     }
 
     public int getId() {
@@ -29,6 +25,10 @@ public class Comment {
 
     public String getEmail() {
         return email;
+    }
+
+    public String getAvatar() {
+        return avatar;
     }
 
     public String getBody() {

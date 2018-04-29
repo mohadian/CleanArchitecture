@@ -25,7 +25,8 @@ public class PostViewItemMapper {
     public List<PostViewItem> transform(List<Post> posts) {
         List<PostViewItem> postViewItems = new ArrayList<>(posts.size());
         for (int i = 0; i < posts.size(); i++) {
-            postViewItems.add(transform(posts.get(i), posts.get(i).getUser()));
+            Post post = posts.get(i);
+            postViewItems.add(transform(post, post.getUser()));
         }
         return postViewItems;
     }
@@ -34,9 +35,9 @@ public class PostViewItemMapper {
         String username = (user != null) ? user.getName() : "Unknown";
         String useremail = (user != null && user.getEmail() != null) ? user.getEmail() : "";
         String avatar = AVATAR + ((user != null && user.getEmail() != null) ? user.getEmail() : "");
+        String comments = (post.getComments() != null && post.getComments().size() > 0) ? String.valueOf(post.getComments().size()) : "";
 
-        PostViewItem postViewItem = new PostViewItem(post.getId(), username, useremail, avatar, post.getTitle(), post.getBody(), post.getCommentsCount());
-        return postViewItem;
+        return new PostViewItem(post.getId(), username, useremail, avatar, post.getTitle(), post.getBody(), comments);
     }
 
 }

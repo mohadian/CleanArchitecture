@@ -3,6 +3,7 @@ package com.elvotra.clean.data.remote.model.mapper;
 import com.elvotra.clean.data.remote.model.PostCommentData;
 import com.elvotra.clean.data.remote.model.PostData;
 import com.elvotra.clean.data.remote.model.UserData;
+import com.elvotra.clean.domain.model.Comment;
 import com.elvotra.clean.domain.model.Post;
 import com.elvotra.clean.domain.model.User;
 
@@ -28,26 +29,29 @@ public class PostsResponseMapper {
     public List<Post> transform(List<PostData> response, List<UserData> userData, List<PostCommentData> postCommentData) {
         List<Post> result = new ArrayList<>(response.size());
         Map<Integer, User> userDataMap = createMap(userData);
-        Map<Integer, Integer> postCommentsCount = createPostCommentCountMap(postCommentData);
+        Map<Integer, List<Comment>> postCommentsCount = createPostCommentsMap(postCommentData);
         for (int i = 0; i < response.size(); i++) {
             PostData postData = response.get(i);
             User user = userDataMap.get(postData.getUserId());
-            Integer commentsCount = postCommentsCount.get(postData.getId());
-            Post post = new Post(postData.getId(), user, postData.getTitle(), postData.getBody(), commentsCount);
+            List<Comment> comments = postCommentsCount.get(postData.getId());
+            Post post = new Post(postData.getId(), user, postData.getTitle(), postData.getBody(), comments);
             result.add(post);
         }
         return result;
     }
 
-    private Map<Integer, Integer> createPostCommentCountMap(List<PostCommentData> postCommentDataList) {
-        Map<Integer, Integer> userDataMap = new HashMap<>();
+    private Map<Integer,  List<Comment>> createPostCommentsMap(List<PostCommentData> postCommentDataList) {
+        Map<Integer, List<Comment>> commentsDataMap = new HashMap<>();
+        List<Comment> comments;
 
         for (int i = 0; i < postCommentDataList.size(); i++) {
-            PostCommentData postCommentData = postCommentDataList.get(i);
-            int postId = postCommentData.getPostId();
-            userDataMap.put(postId, (userDataMap.get(postId) == null) ? 1 : userDataMap.get(postId) + 1);
+            PostCommentData commentData = postCommentDataList.get(i);
+            int postId = commentData.getPostId();
+            comments = (commentsDataMap.containsKey(postId)) ? commentsDataMap.get(postId) :new ArrayList<Comment>();
+            comments.add(new Comment(commentData.getPostId(), commentData.getId(), commentData.getName(), commentData.getEmail(), commentData.getBody()));
+            commentsDataMap.put(postId, comments);
         }
-        return userDataMap;
+        return commentsDataMap;
     }
 
     private Map<Integer, User> createMap(List<UserData> usersData) {

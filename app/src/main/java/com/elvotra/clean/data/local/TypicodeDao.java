@@ -17,18 +17,36 @@ public interface TypicodeDao {
     @Query("SELECT * FROM users")
     List<UserEntity> getUsers();
 
+    @Query("SELECT * FROM posts")
+    List<PostEntity> getPosts();
+
+    @Query("SELECT * FROM posts WHERE posts_id = :postId")
+    PostEntity getPostById(int postId);
+
     @Query("SELECT * FROM users WHERE users_id = :userId")
-    UserEntity getUserById(long userId);
+    UserEntity getUserById(int userId);
 
-    @Query("SELECT * FROM posts ORDER BY user_id")
-    List<PostEntity> getUsersPosts();
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertPost(List<UserEntity> userEntities, List<PostEntity> postEntities, List<CommentEntity> commentEntities);
-
-    @Query("DELETE FROM users WHERE users_id = :userId")
-    void deleteUser(long userId);
+    @Query("SELECT * FROM comments WHERE post_id = :postId")
+    List<CommentEntity> getCommentsByPostId(int postId);
 
     @Query("SELECT * FROM comments ORDER BY post_id")
     List<CommentEntity> getComments();
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertPost(PostEntity post);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertUser(UserEntity user);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertComment(CommentEntity comment);
+
+    @Query("DELETE FROM users")
+    void deleteUsers();
+
+    @Query("DELETE FROM posts")
+    void deletePosts();
+
+    @Query("DELETE FROM comments")
+    void deleteComments();
 }

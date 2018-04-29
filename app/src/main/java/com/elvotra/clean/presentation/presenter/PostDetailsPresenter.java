@@ -4,52 +4,61 @@ import com.elvotra.clean.domain.executor.IExecutor;
 import com.elvotra.clean.domain.executor.IMainThread;
 import com.elvotra.clean.domain.model.Post;
 import com.elvotra.clean.domain.repository.IPostsRepository;
-import com.elvotra.clean.domain.usecase.IGetPostsUseCase;
-import com.elvotra.clean.domain.usecase.GetPostsUseCase;
-import com.elvotra.clean.presentation.model.PostViewItem;
-import com.elvotra.clean.presentation.model.mapper.PostViewItemMapper;
-import com.elvotra.clean.presentation.presenter.IPostsPresenter;
+import com.elvotra.clean.domain.usecase.IGetPostUseCase;
+import com.elvotra.clean.domain.usecase.GetPostUseCase;
+import com.elvotra.clean.presentation.model.PostDetailsViewItem;
+import com.elvotra.clean.presentation.model.mapper.PostDetailsViewItemMapper;
+import com.elvotra.clean.presentation.presenter.IPostDetailsPresenter;
 import com.elvotra.clean.presentation.presenter.base.AbstractPresenter;
 
-import java.util.List;
+public class PostDetailsPresenter extends AbstractPresenter implements IPostDetailsPresenter, IGetPostUseCase.Callback {
 
-public class PostsPresenter extends AbstractPresenter implements IPostsPresenter, IGetPostsUseCase.Callback {
-
-    private IPostsPresenter.View view;
+    private View view;
 
     private IPostsRepository IPostsRepository;
 
-    public PostsPresenter(IExecutor IExecutor,
-                          IMainThread IMainThread,
-                          View view,
-                          IPostsRepository repository) {
+    private int postId;
+
+    public PostDetailsPresenter(
+            int postId,
+            IExecutor IExecutor,
+            IMainThread IMainThread,
+            View view,
+            IPostsRepository repository) {
         super(IExecutor, IMainThread);
+        this.postId = postId;
         this.view = view;
         this.IPostsRepository = repository;
 
         this.view.setPresenter(this);
-
-    }
-
-
-    @Override
-    public void loadPosts() {
-        executeGetPostsUseCase();
     }
 
     @Override
-    public void openPostDetails(int postId) {
-        view.showPostDetails(postId);
+    public void onPostRetrieved(Post post) {
+        view.hideProgress();
+        if (post == null) {
+            view.showNoResults();
+        } else {
+            PostDetailsViewItem postDetailsViewItem = PostDetailsViewItemMapper.getInstance().transform(post);
+            view.showPostDetails(postDetailsViewItem);
+        }
+    }
+
+    @Override
+    public void loadPost(int postId) {
+        this.postId = postId;
+        executeGetPostsUseCase(postId);
     }
 
     @Override
     public void resume() {
-        executeGetPostsUseCase();
+        executeGetPostsUseCase(postId);
     }
 
-    private void executeGetPostsUseCase() {
+    private void executeGetPostsUseCase(int postId) {
         view.showProgress();
-        IGetPostsUseCase getPostsUseCase = new GetPostsUseCase(
+        IGetPostUseCase getPostsUseCase = new GetPostUseCase(
+                postId,
                 IExecutor,
                 IMainThread,
                 this,
@@ -79,17 +88,6 @@ public class PostsPresenter extends AbstractPresenter implements IPostsPresenter
     public void onError(String message) {
         view.hideProgress();
         view.showError(message);
-    }
-
-    @Override
-    public void onPostsRetrieved(List<Post> posts) {
-        view.hideProgress();
-        if (posts.size() == 0) {
-            view.showNoResults();
-        } else {
-            List<PostViewItem> postViewItems = PostViewItemMapper.getInstance().transform(posts);
-            view.showPostsList(postViewItems);
-        }
     }
 
     @Override

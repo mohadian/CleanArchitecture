@@ -1,5 +1,6 @@
 package com.elvotra.clean.presentation.ui.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -13,7 +14,8 @@ import android.widget.TextView;
 
 import com.elvotra.clean.R;
 import com.elvotra.clean.presentation.model.PostViewItem;
-import com.elvotra.clean.presentation.presenter.PostsPresenter;
+import com.elvotra.clean.presentation.presenter.IPostsPresenter;
+import com.elvotra.clean.presentation.ui.activities.PostDetailsActivity;
 import com.elvotra.clean.presentation.ui.adapters.PostsRecyclerAdapter;
 import com.elvotra.clean.presentation.ui.widgets.ScrollChildSwipeRefreshLayout;
 
@@ -22,9 +24,11 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class PostsListFragment extends Fragment implements PostsPresenter.View {
+import static com.elvotra.clean.presentation.ui.activities.PostDetailsActivity.POST_ID;
 
-    private PostsPresenter postsPresenter;
+public class PostsListFragment extends Fragment implements IPostsPresenter.View {
+
+    private IPostsPresenter postsPresenter;
 
     private PostsRecyclerAdapter postsRecyclerAdapter;
 
@@ -36,7 +40,6 @@ public class PostsListFragment extends Fragment implements PostsPresenter.View {
     ScrollChildSwipeRefreshLayout swipeRefreshLayout;
 
     public PostsListFragment() {
-        // Required empty public constructor
     }
 
     public static PostsListFragment newInstance() {
@@ -88,7 +91,7 @@ public class PostsListFragment extends Fragment implements PostsPresenter.View {
     }
 
     @Override
-    public void setPresenter(PostsPresenter presenter) {
+    public void setPresenter(IPostsPresenter presenter) {
         postsPresenter = presenter;
     }
 
@@ -98,25 +101,24 @@ public class PostsListFragment extends Fragment implements PostsPresenter.View {
 
         postsRecyclerView.setVisibility(View.VISIBLE);
 
-        // Especificamos un adaptador (y tambien oyente para evento OnClick de cada elemento)
-        postsRecyclerAdapter = new PostsRecyclerAdapter(postViewItems,
-                new PostsRecyclerAdapter.MovieListItemClickListener() {
+        postsRecyclerAdapter = new PostsRecyclerAdapter(getContext(), postViewItems,
+                new PostsRecyclerAdapter.PostsListItemClickListener() {
 
                     @Override
-                    public void onMovieClicked(long movieId) {
-                        postsPresenter.openPostDetails(movieId);
+                    public void onPostClicked(int postId) {
+                        postsPresenter.openPostDetails(postId);
                     }
 
                 });
 
-
-        // Setear el adaptador al RecyclerView
         postsRecyclerView.setAdapter(postsRecyclerAdapter);
     }
 
     @Override
-    public void showPostDetails(long postId) {
-
+    public void showPostDetails(int postId) {
+        Intent i = new Intent(getActivity(), PostDetailsActivity.class);
+        i.putExtra(POST_ID, postId);
+        startActivity(i);
     }
 
     @Override
