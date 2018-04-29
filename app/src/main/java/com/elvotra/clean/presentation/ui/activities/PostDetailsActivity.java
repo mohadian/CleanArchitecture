@@ -6,8 +6,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.elvotra.clean.R;
 import com.elvotra.clean.data.local.TypicodeDatabase;
 import com.elvotra.clean.data.local.TypicodeLocalDataSource;
@@ -24,7 +26,7 @@ import com.elvotra.clean.utils.ActivityUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class PostDetailsActivity extends AppCompatActivity implements PostDetailsFragment.PostDetailsAvatarCallback {
+public class PostDetailsActivity extends AppCompatActivity implements PostDetailsFragment.PostDetailsToolbarCallback {
     public static final String POST_ID = "POST_ID";
 
     @BindView(R.id.post_details_toolbar)
@@ -33,11 +35,15 @@ public class PostDetailsActivity extends AppCompatActivity implements PostDetail
     CollapsingToolbarLayout toolbarLayout;
     @BindView(R.id.post_details_toolbar_image)
     ImageView imageToolbar;
+    @BindView(R.id.post_details_toolbar_title)
+    TextView toolbarTitle;
+    @BindView(R.id.post_details_post_user)
+    TextView postUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_post_details);
+        setContentView(R.layout.activity_post_details2);
 
         ButterKnife.bind(this);
 
@@ -81,9 +87,13 @@ public class PostDetailsActivity extends AppCompatActivity implements PostDetail
     }
 
     @Override
-    public void updateAvatar(String avatarUrl) {
+    public void updateToolbar(String avatarUrl, String username) {
         Glide.with(this)
                 .load(avatarUrl)
+                .apply(RequestOptions.circleCropTransform())
                 .into(imageToolbar);
+        toolbarLayout.setTitle(username);
+        postUser.setText(username);
+        toolbarTitle.setText(username);
     }
 }

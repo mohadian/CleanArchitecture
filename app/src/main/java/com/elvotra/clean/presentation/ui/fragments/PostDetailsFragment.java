@@ -19,8 +19,8 @@ import butterknife.ButterKnife;
 
 public class PostDetailsFragment extends Fragment implements PostDetailsPresenter.View {
 
-    public interface PostDetailsAvatarCallback {
-        void updateAvatar(String avatarUrl);
+    public interface PostDetailsToolbarCallback {
+        void updateToolbar(String avatarUrl, String username);
     }
 
     private PostDetailsPresenter postDetailsPresenter;
@@ -89,12 +89,12 @@ public class PostDetailsFragment extends Fragment implements PostDetailsPresente
 
         postsRecyclerView.setAdapter(commentsRecyclerAdapter);
 
-        updateAvatar(postDetailsViewItem.getAvatar());
+        updateAvatar(postDetailsViewItem.getAvatar(), postDetailsViewItem.getUser());
     }
 
-    private void updateAvatar(String avatar) {
-        if (getActivity() instanceof PostDetailsAvatarCallback) {
-            ((PostDetailsAvatarCallback) getActivity()).updateAvatar(avatar);
+    private void updateAvatar(String avatar, String username) {
+        if (getActivity() instanceof PostDetailsToolbarCallback) {
+            ((PostDetailsToolbarCallback) getActivity()).updateToolbar(avatar, username);
         }
     }
 
