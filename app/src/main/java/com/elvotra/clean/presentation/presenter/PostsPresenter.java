@@ -4,33 +4,31 @@ import com.elvotra.clean.domain.executor.IExecutor;
 import com.elvotra.clean.domain.executor.IMainThread;
 import com.elvotra.clean.domain.model.Post;
 import com.elvotra.clean.domain.repository.IPostsRepository;
-import com.elvotra.clean.domain.usecase.IGetPostsUseCase;
 import com.elvotra.clean.domain.usecase.GetPostsUseCase;
+import com.elvotra.clean.domain.usecase.IGetPostsUseCase;
+import com.elvotra.clean.presentation.contract.AbstractPresenter;
+import com.elvotra.clean.presentation.contract.PostsContract;
 import com.elvotra.clean.presentation.model.PostViewItem;
 import com.elvotra.clean.presentation.model.mapper.PostViewItemMapper;
-import com.elvotra.clean.presentation.presenter.IPostsPresenter;
-import com.elvotra.clean.presentation.presenter.base.AbstractPresenter;
 
 import java.util.List;
 
-public class PostsPresenter extends AbstractPresenter implements IPostsPresenter, IGetPostsUseCase.Callback {
+public class PostsPresenter extends AbstractPresenter implements PostsContract.IPostsPresenter, IGetPostsUseCase.Callback {
 
-    private IPostsPresenter.View view;
+    private PostsContract.View view;
 
     private IPostsRepository IPostsRepository;
 
     public PostsPresenter(IExecutor IExecutor,
                           IMainThread IMainThread,
-                          View view,
+                          PostsContract.View view,
                           IPostsRepository repository) {
         super(IExecutor, IMainThread);
         this.view = view;
         this.IPostsRepository = repository;
 
         this.view.setPresenter(this);
-
     }
-
 
     @Override
     public void loadPosts() {
@@ -57,16 +55,6 @@ public class PostsPresenter extends AbstractPresenter implements IPostsPresenter
         );
 
         getPostsUseCase.execute();
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void stop() {
-
     }
 
     @Override

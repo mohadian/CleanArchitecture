@@ -3,6 +3,7 @@ package com.elvotra.clean.presentation.model.mapper;
 import com.elvotra.clean.domain.model.Post;
 import com.elvotra.clean.domain.model.User;
 import com.elvotra.clean.presentation.model.PostViewItem;
+import com.elvotra.clean.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +11,6 @@ import java.util.List;
 public class PostViewItemMapper {
 
     private static PostViewItemMapper INSTANCE;
-    private static final String AVATAR = "https://api.adorable.io/avatars/285/";
 
     public static PostViewItemMapper getInstance() {
         if (INSTANCE == null) {
@@ -34,7 +34,7 @@ public class PostViewItemMapper {
     public PostViewItem transform(Post post, User user) {
         String username = (user != null) ? user.getName() : "Unknown";
         String useremail = (user != null && user.getEmail() != null) ? user.getEmail() : "";
-        String avatar = AVATAR + ((user != null && user.getEmail() != null) ? user.getEmail() : "");
+        String avatar = Constants.AVATAR_BASE_URL + ((user != null && user.getEmail() != null) ? user.getEmail() : "");
         String comments = (post.getComments() != null && post.getComments().size() > 0) ? String.valueOf(post.getComments().size()) : "";
 
         return new PostViewItem(post.getId(), username, useremail, avatar, post.getTitle(), post.getBody(), comments);
