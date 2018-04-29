@@ -1,6 +1,6 @@
 package com.elvotra.clean.domain.executor;
 
-public interface MainThread {
+public interface IMainThread {
 
     void post(final Runnable runnable);
 }

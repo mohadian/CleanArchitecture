@@ -9,11 +9,11 @@ import com.elvotra.clean.data.local.TypicodeDatabase;
 import com.elvotra.clean.data.local.TypicodeLocalDataSource;
 import com.elvotra.clean.data.remote.TypicodeRemoteDataSource;
 import com.elvotra.clean.data.repository.PostsRepositoryImp;
-import com.elvotra.clean.domain.executor.impl.ThreadExecutor;
-import com.elvotra.clean.presentation.presenter.imp.PostsPresenterImp;
+import com.elvotra.clean.domain.executor.ThreadExecutor;
+import com.elvotra.clean.presentation.presenter.PostsPresenter;
 import com.elvotra.clean.presentation.ui.fragments.PostsListFragment;
 import com.elvotra.clean.threading.AppExecutors;
-import com.elvotra.clean.threading.MainThreadImpl;
+import com.elvotra.clean.threading.MainThreadImp;
 import com.elvotra.clean.utils.ActivityUtils;
 
 import butterknife.BindView;
@@ -41,9 +41,9 @@ public class PostsActivity extends AppCompatActivity {
                     getSupportFragmentManager(), postsListFragment, R.id.contentFrame);
         }
 
-        new PostsPresenterImp(
+        new PostsPresenter(
                 ThreadExecutor.getInstance(),
-                MainThreadImpl.getInstance(),
+                MainThreadImp.getInstance(),
                 postsListFragment,
                 PostsRepositoryImp.getInstance(TypicodeRemoteDataSource.getInstance(),
                         TypicodeLocalDataSource.getInstance(new AppExecutors(), TypicodeDatabase.getInstance(PostsActivity.this).typicodeDao())));

@@ -5,25 +5,25 @@ import android.support.annotation.NonNull;
 import com.elvotra.clean.domain.model.Comment;
 import com.elvotra.clean.domain.model.Post;
 import com.elvotra.clean.domain.model.User;
-import com.elvotra.clean.domain.repository.PostsRepository;
+import com.elvotra.clean.domain.repository.IPostsRepository;
 
 import java.util.List;
 
-public class PostsRepositoryImp implements PostsRepository {
+public class PostsRepositoryImp implements IPostsRepository {
 
-    private PostsRepository postsRemoteRepository;
-    private PostsRepository postsLocalRepository;
+    private IPostsRepository postsRemoteRepository;
+    private IPostsRepository postsLocalRepository;
 
     private static PostsRepositoryImp INSTANCE;
 
-    public static PostsRepositoryImp getInstance(PostsRepository postsRemoteRepository, PostsRepository postsLocalRepository) {
+    public static PostsRepositoryImp getInstance(IPostsRepository postsRemoteRepository, IPostsRepository postsLocalRepository) {
         if (INSTANCE == null) {
             INSTANCE = new PostsRepositoryImp(postsRemoteRepository, postsLocalRepository);
         }
         return INSTANCE;
     }
 
-    public PostsRepositoryImp(PostsRepository postsRemoteRepository, PostsRepository postsLocalRepository) {
+    public PostsRepositoryImp(IPostsRepository postsRemoteRepository, IPostsRepository postsLocalRepository) {
         this.postsRemoteRepository = postsRemoteRepository;
         this.postsLocalRepository = postsLocalRepository;
     }

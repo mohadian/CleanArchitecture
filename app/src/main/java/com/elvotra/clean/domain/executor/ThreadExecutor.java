@@ -1,6 +1,5 @@
-package com.elvotra.clean.domain.executor.impl;
+package com.elvotra.clean.domain.executor;
 
-import com.elvotra.clean.domain.executor.Executor;
 import com.elvotra.clean.domain.usecase.base.AbstractUseCase;
 
 import java.util.concurrent.BlockingQueue;
@@ -8,9 +7,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-public class ThreadExecutor implements Executor {
+public class ThreadExecutor implements IExecutor {
 
-    private static volatile ThreadExecutor sThreadExecutor;
+    private static volatile ThreadExecutor INSTANCE;
 
     private static final int CORE_POOL_SIZE = 3;
     private static final int MAX_POOL_SIZE = 5;
@@ -44,11 +43,11 @@ public class ThreadExecutor implements Executor {
         });
     }
 
-    public static Executor getInstance() {
-        if (sThreadExecutor == null) {
-            sThreadExecutor = new ThreadExecutor();
+    public static IExecutor getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new ThreadExecutor();
         }
 
-        return sThreadExecutor;
+        return INSTANCE;
     }
 }

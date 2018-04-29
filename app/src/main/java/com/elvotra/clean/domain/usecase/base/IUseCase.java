@@ -1,7 +1,7 @@
 package com.elvotra.clean.domain.usecase.base;
 
 
-public interface UseCase {
+public interface IUseCase {
 
     void execute();
 }

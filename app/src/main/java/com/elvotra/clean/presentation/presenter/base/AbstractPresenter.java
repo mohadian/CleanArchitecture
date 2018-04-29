@@ -1,14 +1,14 @@
 package com.elvotra.clean.presentation.presenter.base;
 
-import com.elvotra.clean.domain.executor.Executor;
-import com.elvotra.clean.domain.executor.MainThread;
+import com.elvotra.clean.domain.executor.IExecutor;
+import com.elvotra.clean.domain.executor.IMainThread;
 
 public abstract class AbstractPresenter {
-    protected Executor executor;
-    protected MainThread mainThread;
+    protected IExecutor IExecutor;
+    protected IMainThread IMainThread;
 
-    public AbstractPresenter(Executor executor, MainThread mainThread) {
-        this.executor = executor;
-        this.mainThread = mainThread;
+    public AbstractPresenter(IExecutor IExecutor, IMainThread IMainThread) {
+        this.IExecutor = IExecutor;
+        this.IMainThread = IMainThread;
     }
 }

@@ -20,9 +20,6 @@ public interface TypicodeDao {
     @Query("SELECT * FROM posts")
     List<PostEntity> getPosts();
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertPosts(List<UserEntity> userEntities, List<PostEntity> postEntities, List<CommentEntity> commentEntities);
-
     @Query("SELECT * FROM posts WHERE posts_id = :postId")
     PostEntity getPostById(int postId);
 

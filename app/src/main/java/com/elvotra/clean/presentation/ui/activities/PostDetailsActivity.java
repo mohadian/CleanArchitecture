@@ -26,12 +26,12 @@ import com.elvotra.clean.data.local.TypicodeDatabase;
 import com.elvotra.clean.data.local.TypicodeLocalDataSource;
 import com.elvotra.clean.data.remote.TypicodeRemoteDataSource;
 import com.elvotra.clean.data.repository.PostsRepositoryImp;
-import com.elvotra.clean.domain.executor.impl.ThreadExecutor;
+import com.elvotra.clean.domain.executor.ThreadExecutor;
+import com.elvotra.clean.presentation.presenter.IPostDetailsPresenter;
 import com.elvotra.clean.presentation.presenter.PostDetailsPresenter;
-import com.elvotra.clean.presentation.presenter.imp.PostDetailsPresenterImp;
 import com.elvotra.clean.presentation.ui.fragments.PostDetailsFragment;
 import com.elvotra.clean.threading.AppExecutors;
-import com.elvotra.clean.threading.MainThreadImpl;
+import com.elvotra.clean.threading.MainThreadImp;
 import com.elvotra.clean.utils.ActivityUtils;
 import com.elvotra.clean.utils.PaletteUtils;
 
@@ -85,9 +85,9 @@ public class PostDetailsActivity extends AppCompatActivity implements PostDetail
                     getSupportFragmentManager(), postsListFragment, R.id.contentPostDetailsFrame);
         }
 
-        PostDetailsPresenter presenter = new PostDetailsPresenterImp(postId,
+        IPostDetailsPresenter presenter = new PostDetailsPresenter(postId,
                 ThreadExecutor.getInstance(),
-                MainThreadImpl.getInstance(),
+                MainThreadImp.getInstance(),
                 postsListFragment,
                 PostsRepositoryImp.getInstance(TypicodeRemoteDataSource.getInstance(),
                         TypicodeLocalDataSource.getInstance(new AppExecutors(), TypicodeDatabase.getInstance(PostDetailsActivity.this).typicodeDao())));

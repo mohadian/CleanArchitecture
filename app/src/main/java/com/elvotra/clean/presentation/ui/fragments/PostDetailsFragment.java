@@ -11,19 +11,19 @@ import android.widget.TextView;
 
 import com.elvotra.clean.R;
 import com.elvotra.clean.presentation.model.PostDetailsViewItem;
-import com.elvotra.clean.presentation.presenter.PostDetailsPresenter;
+import com.elvotra.clean.presentation.presenter.IPostDetailsPresenter;
 import com.elvotra.clean.presentation.ui.adapters.CommentsRecyclerAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class PostDetailsFragment extends Fragment implements PostDetailsPresenter.View {
+public class PostDetailsFragment extends Fragment implements IPostDetailsPresenter.View {
 
     public interface PostDetailsToolbarCallback {
         void updateToolbar(String avatarUrl, String username);
     }
 
-    private PostDetailsPresenter postDetailsPresenter;
+    private IPostDetailsPresenter postDetailsPresenter;
 
     private CommentsRecyclerAdapter commentsRecyclerAdapter;
 
@@ -71,7 +71,7 @@ public class PostDetailsFragment extends Fragment implements PostDetailsPresente
     }
 
     @Override
-    public void setPresenter(PostDetailsPresenter presenter) {
+    public void setPresenter(IPostDetailsPresenter presenter) {
         postDetailsPresenter = presenter;
     }
 

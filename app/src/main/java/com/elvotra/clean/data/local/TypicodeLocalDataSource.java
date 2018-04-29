@@ -9,12 +9,12 @@ import com.elvotra.clean.data.local.model.mapper.PostsEntityDataMapper;
 import com.elvotra.clean.domain.model.Comment;
 import com.elvotra.clean.domain.model.Post;
 import com.elvotra.clean.domain.model.User;
-import com.elvotra.clean.domain.repository.PostsRepository;
+import com.elvotra.clean.domain.repository.IPostsRepository;
 import com.elvotra.clean.threading.AppExecutors;
 
 import java.util.List;
 
-public class TypicodeLocalDataSource implements PostsRepository {
+public class TypicodeLocalDataSource implements IPostsRepository {
 
     private static volatile TypicodeLocalDataSource INSTANCE;
 
