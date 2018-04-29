@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Mostafa</string>
+    <string name="no_tasks_all">No post available</string>
+    <string name="refresh">Refresh</string>
+    <string name="loading_tasks_error">Loading Failed</string>
+    <string name="title_activity_posts">Posts</string>
+    <string name="no_posts">No post available</string>
+</resources>
