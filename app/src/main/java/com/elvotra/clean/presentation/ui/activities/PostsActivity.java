@@ -21,7 +21,7 @@ import butterknife.ButterKnife;
 
 public class PostsActivity extends AppCompatActivity {
 
-    @BindView(R.id.act_posts_toolbar)
+    @BindView(R.id.posts_toolbar)
     Toolbar mToolbar;
 
     @Override

@@ -132,7 +132,7 @@ public class TypicodeLocalDataSource implements PostsRepository {
         Runnable saveRunnable = new Runnable() {
             @Override
             public void run() {
-//                typicodeDao.insertComment(PostsEntityDataMapper.getInstance().transform(comment));
+                typicodeDao.insertComment(PostsEntityDataMapper.getInstance().transform(comment));
             }
         };
         appExecutors.diskIO().execute(saveRunnable);

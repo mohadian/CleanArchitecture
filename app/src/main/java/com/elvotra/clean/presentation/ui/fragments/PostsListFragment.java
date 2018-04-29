@@ -24,6 +24,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.elvotra.clean.presentation.ui.activities.PostDetailsActivity.POST_ID;
+
 public class PostsListFragment extends Fragment implements PostsPresenter.View {
 
     private PostsPresenter postsPresenter;
@@ -115,7 +117,7 @@ public class PostsListFragment extends Fragment implements PostsPresenter.View {
     @Override
     public void showPostDetails(int postId) {
         Intent i = new Intent(getActivity(), PostDetailsActivity.class);
-        i.putExtra(PostDetailsActivity.POST_ID, postId);
+        i.putExtra(POST_ID, postId);
         startActivity(i);
     }
 

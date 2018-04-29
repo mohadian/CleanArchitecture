@@ -50,7 +50,7 @@ public class CommentsRecyclerAdapter
     @Override
     public CommentsRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_item_post, parent, false);
+                .inflate(R.layout.list_item_comment, parent, false);
 
         CommentsRecyclerAdapter.ViewHolder vh = new CommentsRecyclerAdapter.ViewHolder(v);
 

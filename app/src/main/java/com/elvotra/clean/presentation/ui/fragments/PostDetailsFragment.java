@@ -13,23 +13,29 @@ import com.elvotra.clean.R;
 import com.elvotra.clean.presentation.model.PostDetailsViewItem;
 import com.elvotra.clean.presentation.presenter.PostDetailsPresenter;
 import com.elvotra.clean.presentation.ui.adapters.CommentsRecyclerAdapter;
-import com.elvotra.clean.presentation.ui.widgets.ScrollChildSwipeRefreshLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class PostDetailsFragment extends Fragment implements PostDetailsPresenter.View {
 
+    public interface PostDetailsAvatarCallback {
+        void updateAvatar(String avatarUrl);
+    }
+
     private PostDetailsPresenter postDetailsPresenter;
 
     private CommentsRecyclerAdapter commentsRecyclerAdapter;
 
-    @BindView(R.id.fragment_posts_list_recycler_view)
+    @BindView(R.id.post_details_title)
+    TextView postTitle;
+    @BindView(R.id.post_details_body)
+    TextView mLblOverview;
+
+    @BindView(R.id.fragment_comments_list_recycler_view)
     RecyclerView postsRecyclerView;
-    @BindView(R.id.fragment_posts_list_message)
-    TextView mLblMessage;
-    @BindView(R.id.refresh_layout)
-    ScrollChildSwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.fragment_post_details_message)
+    TextView errorMessage;
 
     public PostDetailsFragment() {
     }
@@ -47,12 +53,10 @@ public class PostDetailsFragment extends Fragment implements PostDetailsPresente
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_posts_list, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_post_details, container, false);
 
         ButterKnife.bind(this, rootView);
 
-        // Setear layout de la lista
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         postsRecyclerView.setLayoutManager(mLayoutManager);
 
@@ -73,38 +77,50 @@ public class PostDetailsFragment extends Fragment implements PostDetailsPresente
 
     @Override
     public void showPostDetails(PostDetailsViewItem postDetailsViewItem) {
-        mLblMessage.setVisibility(View.GONE);
+        postTitle.setText(postDetailsViewItem.getTitle());
+
+        mLblOverview.setText(postDetailsViewItem.getBody());
+
+        errorMessage.setVisibility(View.GONE);
 
         postsRecyclerView.setVisibility(View.VISIBLE);
 
         commentsRecyclerAdapter = new CommentsRecyclerAdapter(getContext(), postDetailsViewItem.getComments());
 
         postsRecyclerView.setAdapter(commentsRecyclerAdapter);
+
+        updateAvatar(postDetailsViewItem.getAvatar());
+    }
+
+    private void updateAvatar(String avatar) {
+        if (getActivity() instanceof PostDetailsAvatarCallback) {
+            ((PostDetailsAvatarCallback) getActivity()).updateAvatar(avatar);
+        }
     }
 
     @Override
     public void showNoResults() {
         postsRecyclerView.setVisibility(View.GONE);
-        mLblMessage.setVisibility(View.VISIBLE);
-        mLblMessage.setText(getString(R.string.no_posts));
+        errorMessage.setVisibility(View.VISIBLE);
+        errorMessage.setText(getString(R.string.no_posts));
     }
 
     @Override
     public void showProgress() {
-        swipeRefreshLayout.setRefreshing(true);
+
     }
 
     @Override
     public void hideProgress() {
-        swipeRefreshLayout.setRefreshing(false);
+
     }
 
     @Override
     public void showError(String message) {
 
         postsRecyclerView.setVisibility(View.GONE);
-        mLblMessage.setVisibility(View.VISIBLE);
-        mLblMessage.setText(message);
+        errorMessage.setVisibility(View.VISIBLE);
+        errorMessage.setText(message);
 
     }
 }
