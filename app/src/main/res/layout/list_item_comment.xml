@@ -1,54 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<RelativeLayout android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/list_item_post_user_avatar"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_margin="16dp"
-            android:layout_alignParentTop="true"
-            android:src="@android:drawable/sym_def_app_icon" />
+    <ImageView
+        android:id="@+id/list_item_post_user_avatar"
+        android:layout_width="@dimen/comment_item_avatar_size"
+        android:layout_height="@dimen/comment_item_avatar_size"
+        android:layout_alignParentTop="true"
+        android:layout_margin="@dimen/comment_item_margin"
+        android:src="@android:drawable/sym_def_app_icon" />
 
-        <LinearLayout
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="@dimen/comment_item_margin"
+        android:layout_toEndOf="@id/list_item_post_user_avatar"
+        android:layout_toRightOf="@id/list_item_post_user_avatar"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/list_item_comment_user"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/list_item_post_user_avatar"
-            android:layout_toRightOf="@id/list_item_post_user_avatar"
-            android:layout_marginTop="16dp"
-            android:layout_alignParentTop="true"
-            android:orientation="vertical">
+            android:layout_marginBottom="@dimen/comment_item_margin"
+            android:layout_marginEnd="@dimen/comment_item_margin"
+            android:layout_marginLeft="@dimen/comment_item_margin"
+            android:layout_marginRight="@dimen/comment_item_margin"
+            android:layout_marginStart="@dimen/comment_item_margin"
+            android:textColor="#000000"
+            style="@style/label_medium_text_bold"
+            tools:text="User" />
 
-            <TextView
-                android:id="@+id/list_item_comment_user"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginStart="8dp"
-                android:textColor="#000000"
-                android:textSize="17sp"
-                tools:text="User" />
-
-            <TextView
-                android:id="@+id/list_item_comment_body"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginStart="8dp"
-                android:textSize="14sp"
-                tools:text="Body"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
-        </LinearLayout>
+        <TextView
+            android:id="@+id/list_item_comment_body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/comment_item_margin"
+            android:layout_marginEnd="@dimen/comment_item_margin"
+            android:layout_marginLeft="@dimen/comment_item_margin"
+            android:layout_marginRight="@dimen/comment_item_margin"
+            android:layout_marginStart="@dimen/comment_item_margin"
+            style="@style/label_medium_text"
+            tools:text="Body" />
+    </LinearLayout>
 
 
-    </RelativeLayout>
+</RelativeLayout>

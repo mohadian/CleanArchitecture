@@ -23,32 +23,28 @@
     <style name="Toolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="label_large_text">
-
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
-
     </style>
 
     <style name="label_large_text_bold" parent="label_large_text">
-
         <item name="android:textStyle">bold</item>
-
     </style>
 
     <style name="label_medium_text">
-
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+    </style>
 
+    <style name="label_medium_text_bold" parent="label_medium_text">
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="label_small_text">
-
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
-
     </style>
 </resources>

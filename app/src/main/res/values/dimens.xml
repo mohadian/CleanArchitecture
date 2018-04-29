@@ -5,6 +5,13 @@
     <dimen name="activity_vertical_margin">10dp</dimen>
 
     <dimen name="image_width">120dp</dimen>
-    <dimen name="image_final_width">32dp</dimen>
+    <dimen name="post_details_avatar_small_final_width">32dp</dimen>
     <dimen name="spacing_normal">16dp</dimen>
+    <dimen name="post_details_avatar_small_final_y_position">36dp</dimen>
+    <dimen name="post_details_avatar_normal_size">120dp</dimen>
+    <dimen name="post_item_margin">12dp</dimen>
+    <dimen name="post_list_padding">8dp</dimen>
+    <dimen name="comment_item_margin">8dp</dimen>
+    <dimen name="comment_item_margin_large">16dp</dimen>
+    <dimen name="comment_item_avatar_size">100dp</dimen>
 </resources>
