@@ -17,21 +17,21 @@ import retrofit2.Response;
 
 public class TypicodeRemoteDataSource implements IPostsRepository {
 
-    public interface LoadUsersCallback {
+    private interface LoadUsersCallback {
 
         void onUsersLoaded();
 
         void onError(int statusCode);
     }
 
-    public interface LoadPostCommentsCallback {
+    private interface LoadPostCommentsCallback {
 
         void onPostCommentsLoaded();
 
         void onError(int statusCode);
     }
 
-    static TypicodeRemoteDataSource INSTANCE;
+    private static TypicodeRemoteDataSource INSTANCE;
 
     private List<UserData> userDataListCached;
     private List<PostData> postDataListCached;

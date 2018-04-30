@@ -45,7 +45,6 @@ public class TypicodeLocalDataSource implements IPostsRepository {
 
             @Override
             public void run() {
-
                 final List<PostEntity> postEntities = typicodeDao.getPosts();
                 final List<UserEntity> userEntities = typicodeDao.getUsers();
                 final List<CommentEntity> commentsEntities = typicodeDao.getComments();
@@ -98,15 +97,14 @@ public class TypicodeLocalDataSource implements IPostsRepository {
 
     @Override
     public void deleteAllData() {
-        Runnable saveRunnable = new Runnable() {
+        appExecutors.diskIO().execute(new Runnable() {
             @Override
             public void run() {
                 typicodeDao.deleteUsers();
                 typicodeDao.deletePosts();
                 typicodeDao.deleteComments();
             }
-        };
-        appExecutors.diskIO().execute(saveRunnable);
+        });
     }
 
     @Override
@@ -121,38 +119,35 @@ public class TypicodeLocalDataSource implements IPostsRepository {
     }
 
     private void savePost(final Post post) {
-        Runnable saveRunnable = new Runnable() {
+        appExecutors.diskIO().execute(new Runnable() {
             @Override
             public void run() {
                 typicodeDao.insertUser(PostsEntityDataMapper.getInstance().transformToUserEntity(post));
                 typicodeDao.insertPost(PostsEntityDataMapper.getInstance().transform(post));
             }
-        };
-        appExecutors.diskIO().execute(saveRunnable);
+        });
     }
 
     private void saveUser(final User user) {
-        Runnable saveRunnable = new Runnable() {
+        appExecutors.diskIO().execute(new Runnable() {
             @Override
             public void run() {
                 typicodeDao.insertUser(PostsEntityDataMapper.getInstance().transform(user));
             }
-        };
-        appExecutors.diskIO().execute(saveRunnable);
+        });
     }
 
     private void saveComment(final Comment comment) {
-        Runnable saveRunnable = new Runnable() {
+        appExecutors.diskIO().execute(new Runnable() {
             @Override
             public void run() {
                 typicodeDao.insertComment(PostsEntityDataMapper.getInstance().transform(comment));
             }
-        };
-        appExecutors.diskIO().execute(saveRunnable);
+        });
     }
 
     @VisibleForTesting
-    static void clearInstance() {
+    static void destroyInstance() {
         INSTANCE = null;
     }
 }

@@ -26,6 +26,40 @@ public class PostsEntityDataMapper {
     private PostsEntityDataMapper() {
     }
 
+    //region Domain to Data models
+    public PostEntity transform(Post post) {
+        return new PostEntity(post.getId(),
+                post.getUser().getId(),
+                post.getTitle(),
+                post.getBody()
+        );
+    }
+
+    public UserEntity transform(User user) {
+        return new UserEntity(user.getId(),
+                user.getName(),
+                user.getUsername(),
+                user.getEmail());
+    }
+
+    public CommentEntity transform(Comment comment) {
+        return new CommentEntity(comment.getId(),
+                comment.getPostId(),
+                comment.getName(),
+                comment.getEmail(),
+                comment.getBody());
+    }
+
+    public UserEntity transformToUserEntity(Post post) {
+        User user = post.getUser();
+        return new UserEntity(user.getId(),
+                user.getName(),
+                user.getUsername(),
+                user.getEmail());
+    }
+    //endregion
+
+    //region Data to Domain models
     public List<Post> transform(List<PostEntity> postsEntities, List<UserEntity> userEntities, List<CommentEntity> commentsEntities) {
         List<Post> result = new ArrayList<>(postsEntities.size());
         Map<Integer, User> usersMap = createMap(userEntities);
@@ -49,40 +83,6 @@ public class PostsEntityDataMapper {
 
         result = new Post(postEntity.getId(), user, postEntity.getTitle(), postEntity.getBody(), comments);
         return result;
-    }
-
-    // Domain -> Data
-    public PostEntity transform(Post post) {
-        return new PostEntity(post.getId(),
-                post.getUser().getId(),
-                post.getTitle(),
-                post.getBody()
-        );
-    }
-
-    // Domain -> Data
-    public UserEntity transform(User user) {
-        return new UserEntity(user.getId(),
-                user.getName(),
-                user.getUsername(),
-                user.getEmail());
-    }
-
-    public CommentEntity transform(Comment comment) {
-        return new CommentEntity(comment.getId(),
-                comment.getPostId(),
-                comment.getName(),
-                comment.getEmail(),
-                comment.getBody());
-    }
-
-    // Domain -> Data
-    public UserEntity transformToUserEntity(Post post) {
-        User user = post.getUser();
-        return new UserEntity(user.getId(),
-                user.getName(),
-                user.getUsername(),
-                user.getEmail());
     }
 
     private Map<Integer, List<Comment>> createPostCommentsMap(List<CommentEntity> commentEntities) {
@@ -109,4 +109,5 @@ public class PostsEntityDataMapper {
         }
         return userDataMap;
     }
+    // endregion
 }
