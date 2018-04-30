@@ -73,19 +73,23 @@ public class TypicodeLocalDataSource implements IPostsRepository {
             @Override
             public void run() {
                 final PostEntity postEntity = typicodeDao.getPostById(postId);
-                final UserEntity userEntity = typicodeDao.getUserById(postEntity.getUserId());
-                final List<CommentEntity> commentsEntities = typicodeDao.getCommentsByPostId(postId);
-                appExecutors.mainThread().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (postEntity==null) {
-                            callback.onError(-1);
-                        } else {
-                            Post postArrayList = PostsEntityDataMapper.getInstance().transform(postEntity, userEntity, commentsEntities);
-                            callback.onPostLoaded(postArrayList);
+                if(postEntity != null) {
+                    final UserEntity userEntity = typicodeDao.getUserById(postEntity.getUserId());
+                    final List<CommentEntity> commentsEntities = typicodeDao.getCommentsByPostId(postId);
+                    appExecutors.mainThread().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (postEntity == null) {
+                                callback.onError(-1);
+                            } else {
+                                Post postArrayList = PostsEntityDataMapper.getInstance().transform(postEntity, userEntity, commentsEntities);
+                                callback.onPostLoaded(postArrayList);
+                            }
                         }
-                    }
-                });
+                    });
+                } else {
+                    callback.onError(-1);
+                }
             }
         };
 

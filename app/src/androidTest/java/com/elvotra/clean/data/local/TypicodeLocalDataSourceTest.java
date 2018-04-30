@@ -20,25 +20,40 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyList;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class TypicodeLocalDataSourceTest {
+    private static final String POST_TITLE = "title";
+    private static final String POST_BODY = "body";
+    private static final String USER_NAME = "name";
+    private static final String USER_USERNAME = "username";
+    private static final String USER_EMAIL = "user@test.com";
+    private static final String COMMENT_USER_NAME = "comment_name";
+    private static final String COMMENT_USER_EMAIL = "comment_email";
+    private static final String COMMENT_BODY = "comment_body";
+
     private TypicodeLocalDataSource localDataSource;
 
     private TypicodeDatabase typicodeDatabase;
 
     @Before
     public void setup() {
-        // using an in-memory database for testing, since it doesn't survive killing the process
+        // using an in-memory database for testing
         typicodeDatabase = Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getContext(),
                 TypicodeDatabase.class)
                 .build();
         TypicodeDao tasksDao = typicodeDatabase.typicodeDao();
 
-        // Make sure that we're not keeping a reference to the wrong instance.
         TypicodeLocalDataSource.clearInstance();
         localDataSource = TypicodeLocalDataSource.getInstance(new SingleExecutors(), tasksDao);
     }
@@ -49,33 +64,114 @@ public class TypicodeLocalDataSourceTest {
         TypicodeLocalDataSource.clearInstance();
     }
 
-
     @Test
-    public void getPosts() {
+    public void testPreConditions() {
+        assertNotNull(localDataSource);
     }
 
     @Test
-    public void getPost() {
+    public void getPosts_shouldReturnSavedPosts_whenPostsAvailable() {
+        List<Post> posts = createPostList(2, 3);
+        final Post newPost = posts.get(0);
+
+        localDataSource.savePosts(posts);
+
+        localDataSource.getPosts(new IPostsRepository.LoadPostsCallback() {
+            @Override
+            public void onPostsLoaded(List<Post> posts) {
+                assertNotNull(posts);
+                assertEquals(2, posts.size());
+                Post post = posts.get(0);
+                assertNotNull(post.getComments());
+                assertEquals(3, post.getComments().size());
+                assertThat(post, is(newPost));
+            }
+
+            @Override
+            public void onError(int statusCode) {
+                fail();
+            }
+        });
     }
 
     @Test
-    public void deleteAllData() {
+    public void getPosts_shouldReturnError_whenPostsAvailable() {
+        localDataSource.getPosts(new IPostsRepository.LoadPostsCallback() {
+            @Override
+            public void onPostsLoaded(List<Post> posts) {
+                fail();
+            }
+
+            @Override
+            public void onError(int statusCode) {
+                assertEquals(-1, statusCode);
+            }
+        });
+    }
+
+    @Test
+    public void getPost_shouldReturnStoredPost_whenAvailable() {
+        List<Post> posts = createPostList(2, 3);
+        final Post newPost = posts.get(0);
+
+        localDataSource.savePosts(posts);
+
+        localDataSource.getPost(newPost.getId(), new IPostsRepository.LoadPostCallback() {
+            @Override
+            public void onPostLoaded(Post post) {
+                assertNotNull(post);
+                assertNotNull(post.getComments());
+                assertEquals(3, post.getComments().size());
+                assertThat(post, is(newPost));
+            }
+
+            @Override
+            public void onError(int statusCode) {
+                fail();
+            }
+        });
+    }
+
+    @Test
+    public void getPost_shouldReturnStoredPost_whenNotAvailable() {
+        List<Post> posts = createPostList(2, 3);
+
+        localDataSource.savePosts(posts);
+
+        localDataSource.getPost(-1, new IPostsRepository.LoadPostCallback() {
+            @Override
+            public void onPostLoaded(Post post) {
+                fail();
+            }
+
+            @Override
+            public void onError(int statusCode) {
+                assertEquals(-1, statusCode);
+            }
+        });
+    }
+
+    @Test
+    public void deleteAllData_getPostsReturnEmptyList() {
+        IPostsRepository.LoadPostsCallback mockLoadPostsCallback = mock(IPostsRepository.LoadPostsCallback.class);
+        List<Post> posts = createPostList(1, 1);
+        localDataSource.savePosts(posts);
+
+        localDataSource.deleteAllData();
+
+        localDataSource.getPosts(mockLoadPostsCallback);
+
+        verify(mockLoadPostsCallback).onError(anyInt());
+        verify(mockLoadPostsCallback, never()).onPostsLoaded(anyList());
     }
 
     @Test
     public void savePosts_shouldStorePosts() {
-        User user = new User(1, "name", "username", "user@test.com");
-        List<Comment> comments = new ArrayList<>(1);
-        Comment comment = new Comment(1, 1, "comment_name", "comment_email", "comment_body");
-        comments.add(comment);
-        final Post newPost = new Post(1, user, "title", "body", comments);
-        List<Post> posts = new ArrayList<>(1);
-        posts.add(newPost);
+        List<Post> posts = createPostList(1, 1);
+        final Post newPost = posts.get(0);
 
-        // When saved into the persistent repository
         localDataSource.savePosts(posts);
 
-        // Then the task can be retrieved from the persistent repository
         localDataSource.getPost(newPost.getId(), new IPostsRepository.LoadPostCallback() {
             @Override
             public void onPostLoaded(Post post) {
@@ -84,8 +180,24 @@ public class TypicodeLocalDataSourceTest {
 
             @Override
             public void onError(int statusCode) {
-                fail("Callback error");
+                fail();
             }
         });
+    }
+
+    private List<Post> createPostList(int postCount, int commentsCount) {
+        List<Post> posts = new ArrayList<>(postCount);
+        for (int i = 0; i < postCount; i++) {
+            User user = new User(i, USER_NAME, USER_USERNAME, USER_EMAIL);
+            List<Comment> comments = new ArrayList<>(commentsCount);
+            for (int j = 0; j < commentsCount; j++) {
+                Comment comment = new Comment(i, j + (i * commentsCount), COMMENT_USER_NAME, COMMENT_USER_EMAIL, COMMENT_BODY);
+                comments.add(comment);
+            }
+            final Post newPost = new Post(i, user, POST_TITLE, POST_BODY, comments);
+            posts.add(newPost);
+        }
+
+        return posts;
     }
 }
