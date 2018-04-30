@@ -1,6 +1,7 @@
 package com.elvotra.clean.data.local;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 
 import com.elvotra.clean.data.local.model.CommentEntity;
 import com.elvotra.clean.data.local.model.PostEntity;
@@ -105,7 +106,17 @@ public class TypicodeLocalDataSource implements IPostsRepository {
     }
 
     @Override
-    public void savePost(final Post post) {
+    public void savePosts(final List<Post> posts) {
+        for (Post post : posts) {
+            savePost(post);
+            saveUser(post.getUser());
+            for (Comment comment : post.getComments()) {
+                saveComment(comment);
+            }
+        }
+    }
+
+    private void savePost(final Post post) {
         Runnable saveRunnable = new Runnable() {
             @Override
             public void run() {
@@ -116,8 +127,7 @@ public class TypicodeLocalDataSource implements IPostsRepository {
         appExecutors.diskIO().execute(saveRunnable);
     }
 
-    @Override
-    public void saveUser(final User user) {
+    private void saveUser(final User user) {
         Runnable saveRunnable = new Runnable() {
             @Override
             public void run() {
@@ -127,8 +137,7 @@ public class TypicodeLocalDataSource implements IPostsRepository {
         appExecutors.diskIO().execute(saveRunnable);
     }
 
-    @Override
-    public void saveComment(final Comment comment) {
+    private void saveComment(final Comment comment) {
         Runnable saveRunnable = new Runnable() {
             @Override
             public void run() {
@@ -136,5 +145,10 @@ public class TypicodeLocalDataSource implements IPostsRepository {
             }
         };
         appExecutors.diskIO().execute(saveRunnable);
+    }
+
+    @VisibleForTesting
+    static void clearInstance() {
+        INSTANCE = null;
     }
 }

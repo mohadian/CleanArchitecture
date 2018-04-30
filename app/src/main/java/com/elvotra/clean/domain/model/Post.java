@@ -1,5 +1,7 @@
 package com.elvotra.clean.domain.model;
 
+import com.google.common.base.Objects;
+
 import java.util.List;
 
 public class Post {
@@ -39,5 +41,21 @@ public class Post {
 
     public List<Comment> getComments() {
         return comments;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Post post = (Post) o;
+        return Objects.equal(id, post.id) &&
+                Objects.equal(user, post.user) &&
+                Objects.equal(title, post.title) &&
+                Objects.equal(body, post.body) ;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id, user, title, body);
     }
 }

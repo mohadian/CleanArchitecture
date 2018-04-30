@@ -1,5 +1,7 @@
 package com.elvotra.clean.domain.model;
 
+import com.google.common.base.Objects;
+
 public class Comment {
     private int postId;
     private int id;
@@ -33,5 +35,22 @@ public class Comment {
 
     public String getBody() {
         return body;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Comment comment = (Comment) o;
+        return Objects.equal(id, comment.id) &&
+                Objects.equal(postId, comment.postId) &&
+                Objects.equal(name, comment.name) &&
+                Objects.equal(email, comment.email) &&
+                Objects.equal(body, comment.body);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id, postId, name, email, body);
     }
 }

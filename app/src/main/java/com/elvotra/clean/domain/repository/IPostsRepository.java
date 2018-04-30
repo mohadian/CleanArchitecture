@@ -2,9 +2,7 @@ package com.elvotra.clean.domain.repository;
 
 import android.support.annotation.NonNull;
 
-import com.elvotra.clean.domain.model.Comment;
 import com.elvotra.clean.domain.model.Post;
-import com.elvotra.clean.domain.model.User;
 
 import java.util.List;
 
@@ -30,7 +28,5 @@ public interface IPostsRepository {
 
     void deleteAllData();
 
-    void savePost(Post post);
-    void saveUser(User user);
-    void saveComment(Comment comment);
+    void savePosts(List<Post> posts);
 }

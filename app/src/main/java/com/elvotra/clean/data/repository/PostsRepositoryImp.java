@@ -2,9 +2,7 @@ package com.elvotra.clean.data.repository;
 
 import android.support.annotation.NonNull;
 
-import com.elvotra.clean.domain.model.Comment;
 import com.elvotra.clean.domain.model.Post;
-import com.elvotra.clean.domain.model.User;
 import com.elvotra.clean.domain.repository.IPostsRepository;
 
 import java.util.List;
@@ -65,13 +63,7 @@ public class PostsRepositoryImp implements IPostsRepository {
 
     private void refreshLocalDataSource(List<Post> posts) {
         postsLocalRepository.deleteAllData();
-        for (Post post : posts) {
-            postsLocalRepository.savePost(post);
-            postsLocalRepository.saveUser(post.getUser());
-            for (Comment comment : post.getComments()) {
-                postsLocalRepository.saveComment(comment);
-            }
-        }
+        postsLocalRepository.savePosts(posts);
     }
 
     @Override
@@ -80,17 +72,7 @@ public class PostsRepositoryImp implements IPostsRepository {
     }
 
     @Override
-    public void savePost(Post post) {
-
-    }
-
-    @Override
-    public void saveUser(User user) {
-
-    }
-
-    @Override
-    public void saveComment(Comment comment) {
+    public void savePosts(List<Post> posts) {
 
     }
 }
