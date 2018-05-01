@@ -17,7 +17,7 @@ public class PostsPresenter extends AbstractPresenter implements PostsContract.I
 
     private PostsContract.View view;
 
-    private IPostsRepository IPostsRepository;
+    private IPostsRepository iPostsRepository;
 
     public PostsPresenter(IExecutor IExecutor,
                           IMainThread IMainThread,
@@ -25,7 +25,7 @@ public class PostsPresenter extends AbstractPresenter implements PostsContract.I
                           IPostsRepository repository) {
         super(IExecutor, IMainThread);
         this.view = view;
-        this.IPostsRepository = repository;
+        this.iPostsRepository = repository;
 
         this.view.setPresenter(this);
     }
@@ -48,10 +48,10 @@ public class PostsPresenter extends AbstractPresenter implements PostsContract.I
     private void executeGetPostsUseCase() {
         view.showProgress();
         IGetPostsUseCase getPostsUseCase = new GetPostsUseCase(
-                IExecutor,
-                IMainThread,
+                iExecutor,
+                iMainThread,
                 this,
-                IPostsRepository
+                iPostsRepository
         );
 
         getPostsUseCase.execute();
@@ -60,7 +60,7 @@ public class PostsPresenter extends AbstractPresenter implements PostsContract.I
     @Override
     public void destroy() {
         view = null;
-        IPostsRepository = null;
+        iPostsRepository = null;
     }
 
     @Override

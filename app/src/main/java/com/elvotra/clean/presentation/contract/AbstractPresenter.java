@@ -4,11 +4,11 @@ import com.elvotra.clean.domain.executor.IExecutor;
 import com.elvotra.clean.domain.executor.IMainThread;
 
 public abstract class AbstractPresenter {
-    protected IExecutor IExecutor;
-    protected IMainThread IMainThread;
+    protected IExecutor iExecutor;
+    protected IMainThread iMainThread;
 
     public AbstractPresenter(IExecutor IExecutor, IMainThread IMainThread) {
-        this.IExecutor = IExecutor;
-        this.IMainThread = IMainThread;
+        this.iExecutor = IExecutor;
+        this.iMainThread = IMainThread;
     }
 }

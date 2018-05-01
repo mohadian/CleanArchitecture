@@ -6,10 +6,10 @@ import com.elvotra.clean.domain.model.Post;
 import com.elvotra.clean.domain.repository.IPostsRepository;
 import com.elvotra.clean.domain.usecase.GetPostUseCase;
 import com.elvotra.clean.domain.usecase.IGetPostUseCase;
+import com.elvotra.clean.presentation.contract.AbstractPresenter;
 import com.elvotra.clean.presentation.contract.PostDetailsContract;
 import com.elvotra.clean.presentation.model.PostDetailsViewItem;
 import com.elvotra.clean.presentation.model.mapper.PostDetailsViewItemMapper;
-import com.elvotra.clean.presentation.contract.AbstractPresenter;
 
 public class PostDetailsPresenter extends AbstractPresenter implements PostDetailsContract.IPostDetailsPresenter, IGetPostUseCase.Callback {
 
@@ -59,8 +59,8 @@ public class PostDetailsPresenter extends AbstractPresenter implements PostDetai
         view.showProgress();
         IGetPostUseCase getPostsUseCase = new GetPostUseCase(
                 postId,
-                IExecutor,
-                IMainThread,
+                iExecutor,
+                iMainThread,
                 this,
                 IPostsRepository
         );

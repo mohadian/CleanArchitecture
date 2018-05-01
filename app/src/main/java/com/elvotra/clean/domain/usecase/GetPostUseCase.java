@@ -4,7 +4,6 @@ import com.elvotra.clean.domain.executor.IExecutor;
 import com.elvotra.clean.domain.executor.IMainThread;
 import com.elvotra.clean.domain.model.Post;
 import com.elvotra.clean.domain.repository.IPostsRepository;
-import com.elvotra.clean.domain.usecase.IGetPostUseCase;
 import com.elvotra.clean.domain.usecase.base.AbstractUseCase;
 
 public class GetPostUseCase extends AbstractUseCase implements IGetPostUseCase {
@@ -29,7 +28,7 @@ public class GetPostUseCase extends AbstractUseCase implements IGetPostUseCase {
         repository.getPost(postId, new IPostsRepository.LoadPostCallback() {
             @Override
             public void onPostLoaded(final Post post) {
-                IMainThread.post(new Runnable() {
+                iMainThread.post(new Runnable() {
                     @Override
                     public void run() {
                         callback.onPostRetrieved(post);
@@ -39,7 +38,7 @@ public class GetPostUseCase extends AbstractUseCase implements IGetPostUseCase {
 
             @Override
             public void onError(final int statusCode) {
-                IMainThread.post(new Runnable() {
+                iMainThread.post(new Runnable() {
                     @Override
                     public void run() {
                         callback.onRetrievalFailed(statusCode);

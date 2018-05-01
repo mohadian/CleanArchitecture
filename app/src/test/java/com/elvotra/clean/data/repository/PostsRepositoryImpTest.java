@@ -1,10 +1,9 @@
 package com.elvotra.clean.data.repository;
 
+import com.elvotra.clean.DomainDataUtil;
 import com.elvotra.clean.data.local.TypicodeLocalDataSource;
 import com.elvotra.clean.data.remote.TypicodeRemoteDataSource;
-import com.elvotra.clean.domain.model.Comment;
 import com.elvotra.clean.domain.model.Post;
-import com.elvotra.clean.domain.model.User;
 import com.elvotra.clean.domain.repository.IPostsRepository;
 
 import org.junit.After;
@@ -17,7 +16,6 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
@@ -30,15 +28,6 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PostsRepositoryImpTest {
-    private static final String POST_TITLE = "title";
-    private static final String POST_BODY = "body";
-    private static final String USER_NAME = "name";
-    private static final String USER_USERNAME = "username";
-    private static final String USER_EMAIL = "user@test.com";
-    private static final String COMMENT_USER_NAME = "comment_name";
-    private static final String COMMENT_USER_EMAIL = "comment_email";
-    private static final String COMMENT_BODY = "comment_body";
-
     private PostsRepositoryImp postsRepository;
 
     @Mock
@@ -72,7 +61,7 @@ public class PostsRepositoryImpTest {
 
     @Test
     public void getPosts_shouldCallLocalDataSource_whenAvailableLocally() {
-        List<Post> posts = createPostList(1, 1);
+        List<Post> posts = DomainDataUtil.createPostList(1, 1);
 
         postsRepository.getPosts(mockLoadPostsCallback);
 
@@ -85,7 +74,7 @@ public class PostsRepositoryImpTest {
 
     @Test
     public void getPosts_shouldCallRemoteDataSource_whenNotAvailableLocallyAvailableRemotely() {
-        List<Post> posts = createPostList(1, 1);
+        List<Post> posts = DomainDataUtil.createPostList(1, 1);
         int statusCode = -1;
 
         postsRepository.getPosts(mockLoadPostsCallback);
@@ -145,25 +134,9 @@ public class PostsRepositoryImpTest {
 
     @Test
     public void savePosts_shouldCallLocalDataSource() {
-        List<Post> posts = createPostList(1, 1);
+        List<Post> posts = DomainDataUtil.createPostList(1, 1);
         postsRepository.savePosts(posts);
 
         verify(mockLocalDataSource).savePosts(posts);
-    }
-
-    private List<Post> createPostList(int postCount, int commentsCount) {
-        List<Post> posts = new ArrayList<>(postCount);
-        for (int i = 0; i < postCount; i++) {
-            User user = new User(i, USER_NAME, USER_USERNAME, USER_EMAIL);
-            List<Comment> comments = new ArrayList<>(commentsCount);
-            for (int j = 0; j < commentsCount; j++) {
-                Comment comment = new Comment(i, j + (i * commentsCount), COMMENT_USER_NAME, COMMENT_USER_EMAIL, COMMENT_BODY);
-                comments.add(comment);
-            }
-            final Post newPost = new Post(i, user, POST_TITLE, POST_BODY, comments);
-            posts.add(newPost);
-        }
-
-        return posts;
     }
 }
