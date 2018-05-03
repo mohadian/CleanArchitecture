@@ -35,7 +35,11 @@ public class PostsRepositoryImp implements IPostsRepository {
             postsLocalRepository.getPosts(forrceUpdate, new LoadPostsCallback() {
                 @Override
                 public void onPostsLoaded(List<Post> posts) {
-                    callback.onPostsLoaded(posts);
+                    if(posts.isEmpty()){
+                        loadDataFromRemoteDataSource(forrceUpdate, callback);
+                    } else {
+                        callback.onPostsLoaded(posts);
+                    }
                 }
 
                 @Override

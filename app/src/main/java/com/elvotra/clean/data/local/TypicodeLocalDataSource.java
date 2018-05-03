@@ -51,12 +51,8 @@ public class TypicodeLocalDataSource implements IPostsRepository {
                 appExecutors.mainThread().execute(new Runnable() {
                     @Override
                     public void run() {
-                        if (postEntities.isEmpty()) {
-                            callback.onError(-1);
-                        } else {
-                            List<Post> postArrayList = PostsEntityDataMapper.getInstance().transform(postEntities, userEntities, commentsEntities);
-                            callback.onPostsLoaded(postArrayList);
-                        }
+                        List<Post> postArrayList = PostsEntityDataMapper.getInstance().transform(postEntities, userEntities, commentsEntities);
+                        callback.onPostsLoaded(postArrayList);
                     }
                 });
             }
@@ -72,18 +68,14 @@ public class TypicodeLocalDataSource implements IPostsRepository {
             @Override
             public void run() {
                 final PostEntity postEntity = typicodeDao.getPostById(postId);
-                if(postEntity != null) {
+                if (postEntity != null) {
                     final UserEntity userEntity = typicodeDao.getUserById(postEntity.getUserId());
                     final List<CommentEntity> commentsEntities = typicodeDao.getCommentsByPostId(postId);
                     appExecutors.mainThread().execute(new Runnable() {
                         @Override
                         public void run() {
-                            if (postEntity == null) {
-                                callback.onError(-1);
-                            } else {
-                                Post postArrayList = PostsEntityDataMapper.getInstance().transform(postEntity, userEntity, commentsEntities);
-                                callback.onPostLoaded(postArrayList);
-                            }
+                            Post postArrayList = PostsEntityDataMapper.getInstance().transform(postEntity, userEntity, commentsEntities);
+                            callback.onPostLoaded(postArrayList);
                         }
                     });
                 } else {

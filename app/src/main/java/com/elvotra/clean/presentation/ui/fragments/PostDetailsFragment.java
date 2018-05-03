@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.elvotra.clean.R;
@@ -26,9 +27,11 @@ public class PostDetailsFragment extends Fragment implements PostDetailsContract
     }
 
     private PostDetailsContract.IPostDetailsPresenter postDetailsPresenter;
-    private CommentsRecyclerAdapter commentsRecyclerAdapter;
-    private int postId;
 
+    @BindView(R.id.post_details_container)
+    View detailsContainer;
+    @BindView(R.id.post_details_progress)
+    ProgressBar postDetailsProgress;
     @BindView(R.id.post_details_title)
     TextView postTitle;
     @BindView(R.id.post_details_body)
@@ -66,12 +69,11 @@ public class PostDetailsFragment extends Fragment implements PostDetailsContract
         postsRecyclerView.setLayoutManager(mLayoutManager);
 
         Bundle args = getArguments();
-        postId = args.getInt(POST_ID);
+        int postId = args.getInt(POST_ID);
 
         postDetailsPresenter.loadPost(postId);
 
         return rootView;
-
     }
 
     @Override
@@ -87,15 +89,14 @@ public class PostDetailsFragment extends Fragment implements PostDetailsContract
 
     @Override
     public void showPostDetails(PostDetailsViewItem postDetailsViewItem) {
+        detailsContainer.setVisibility(View.VISIBLE);
         postTitle.setText(postDetailsViewItem.getTitle());
 
         mLblOverview.setText(postDetailsViewItem.getBody());
-
         errorMessage.setVisibility(View.GONE);
-
         postsRecyclerView.setVisibility(View.VISIBLE);
 
-        commentsRecyclerAdapter = new CommentsRecyclerAdapter(getContext(), postDetailsViewItem.getComments());
+        CommentsRecyclerAdapter commentsRecyclerAdapter = new CommentsRecyclerAdapter(getContext(), postDetailsViewItem.getComments());
 
         postsRecyclerView.setAdapter(commentsRecyclerAdapter);
 
@@ -112,26 +113,25 @@ public class PostDetailsFragment extends Fragment implements PostDetailsContract
     public void showNoResults() {
         postsRecyclerView.setVisibility(View.GONE);
         errorMessage.setVisibility(View.VISIBLE);
+        detailsContainer.setVisibility(View.GONE);
         errorMessage.setText(getString(R.string.no_posts));
     }
 
     @Override
     public void showProgress() {
-
+        postDetailsProgress.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
-
+        postDetailsProgress.setVisibility(View.GONE);
     }
 
     @Override
     public void showError(String message) {
-
         postsRecyclerView.setVisibility(View.GONE);
         errorMessage.setVisibility(View.VISIBLE);
         errorMessage.setText(message);
-
     }
 
     @Override
