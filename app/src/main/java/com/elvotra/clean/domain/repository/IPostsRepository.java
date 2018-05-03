@@ -22,9 +22,9 @@ public interface IPostsRepository {
         void onError(int statusCode);
     }
 
-    void getPosts(@NonNull LoadPostsCallback callback);
+    void getPosts(boolean forceUpdate, @NonNull LoadPostsCallback callback);
 
-    void getPost(@NonNull int postId, @NonNull LoadPostCallback callback);
+    void getPost(int postId, @NonNull LoadPostCallback callback);
 
     void deleteAllData();
 

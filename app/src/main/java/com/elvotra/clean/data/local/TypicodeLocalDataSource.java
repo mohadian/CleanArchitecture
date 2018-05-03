@@ -40,7 +40,7 @@ public class TypicodeLocalDataSource implements IPostsRepository {
     }
 
     @Override
-    public void getPosts(@NonNull final LoadPostsCallback callback) {
+    public void getPosts(boolean forceUpdate, @NonNull final LoadPostsCallback callback) {
         Runnable runnable = new Runnable() {
 
             @Override
@@ -66,7 +66,7 @@ public class TypicodeLocalDataSource implements IPostsRepository {
     }
 
     @Override
-    public void getPost(@NonNull final int postId, final @NonNull LoadPostCallback callback) {
+    public void getPost(final int postId, final @NonNull LoadPostCallback callback) {
         Runnable runnable = new Runnable() {
 
             @Override

@@ -28,27 +28,31 @@ public class PostsRepositoryImp implements IPostsRepository {
     }
 
     @Override
-    public void getPosts(@NonNull final LoadPostsCallback callback) {
-        postsLocalRepository.getPosts(new LoadPostsCallback() {
-            @Override
-            public void onPostsLoaded(List<Post> posts) {
-                callback.onPostsLoaded(posts);
-            }
+    public void getPosts(final boolean forrceUpdate, @NonNull final LoadPostsCallback callback) {
+        if(forrceUpdate){
+            loadDataFromRemoteDataSource(forrceUpdate, callback);
+        } else {
+            postsLocalRepository.getPosts(forrceUpdate, new LoadPostsCallback() {
+                @Override
+                public void onPostsLoaded(List<Post> posts) {
+                    callback.onPostsLoaded(posts);
+                }
 
-            @Override
-            public void onError(int statusCode) {
-                loadDataFromRemoteDataSource(callback);
-            }
-        });
+                @Override
+                public void onError(int statusCode) {
+                    loadDataFromRemoteDataSource(forrceUpdate, callback);
+                }
+            });
+        }
     }
 
     @Override
-    public void getPost(@NonNull int postId, @NonNull LoadPostCallback callback) {
+    public void getPost(int postId, @NonNull LoadPostCallback callback) {
         postsLocalRepository.getPost(postId, callback);
     }
 
-    private void loadDataFromRemoteDataSource(@NonNull final LoadPostsCallback callback) {
-        postsRemoteRepository.getPosts(new LoadPostsCallback() {
+    private void loadDataFromRemoteDataSource(boolean forceUpdate, @NonNull final LoadPostsCallback callback) {
+        postsRemoteRepository.getPosts(forceUpdate, new LoadPostsCallback() {
             @Override
             public void onPostsLoaded(List<Post> posts) {
                 refreshLocalDataSource(posts);

@@ -20,16 +20,22 @@ public class DomainDataUtil {
     public static List<Post> createPostList(int postCount, int commentsCount) {
         List<Post> posts = new ArrayList<>(postCount);
         for (int i = 0; i < postCount; i++) {
-            User user = new User(i, USER_NAME, USER_USERNAME, USER_EMAIL);
-            List<Comment> comments = new ArrayList<>(commentsCount);
-            for (int j = 0; j < commentsCount; j++) {
-                Comment comment = new Comment(i, j + (i * commentsCount), COMMENT_USER_NAME, COMMENT_USER_EMAIL, COMMENT_BODY);
-                comments.add(comment);
-            }
-            final Post newPost = new Post(i, user, POST_TITLE, POST_BODY, comments);
+            final Post newPost = createSinglePost(i, i, commentsCount);
             posts.add(newPost);
         }
 
         return posts;
+    }
+
+    public static Post createSinglePost(int postId, int userId, int commentsCount) {
+        User user = new User(userId, USER_NAME, USER_USERNAME, USER_EMAIL);
+        List<Comment> comments = new ArrayList<>(commentsCount);
+        for (int j = 0; j < commentsCount; j++) {
+            Comment comment = new Comment(postId, j + (postId * commentsCount), COMMENT_USER_NAME, COMMENT_USER_EMAIL, COMMENT_BODY);
+            comments.add(comment);
+        }
+        final Post newPost = new Post(postId, user, POST_TITLE, POST_BODY, comments);
+
+        return newPost;
     }
 }

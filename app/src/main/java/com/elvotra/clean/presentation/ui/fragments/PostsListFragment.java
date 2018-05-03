@@ -55,28 +55,24 @@ public class PostsListFragment extends Fragment implements PostsContract.View {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_posts_list, container, false);
 
         ButterKnife.bind(this, rootView);
 
-        // Setear layout de la lista
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         postsRecyclerView.setLayoutManager(mLayoutManager);
 
-        // Set up progress indicator
         swipeRefreshLayout.setColorSchemeColors(
                 ContextCompat.getColor(getActivity(), R.color.colorPrimary),
                 ContextCompat.getColor(getActivity(), R.color.colorAccent),
                 ContextCompat.getColor(getActivity(), R.color.colorPrimaryDark)
         );
-        // Set the scrolling view in the custom SwipeRefreshLayout.
         swipeRefreshLayout.setScrollUpChild(postsRecyclerView);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                postsPresenter.loadPosts();
+                postsPresenter.loadPosts(true);
             }
         });
 
@@ -145,5 +141,10 @@ public class PostsListFragment extends Fragment implements PostsContract.View {
         mLblMessage.setVisibility(View.VISIBLE);
         mLblMessage.setText(message);
 
+    }
+
+    @Override
+    public boolean isActive() {
+        return isAdded();
     }
 }

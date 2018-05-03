@@ -13,10 +13,12 @@ public interface PostsContract {
         void showPostDetails(int postId);
 
         void showNoResults();
+
+        boolean isActive();
     }
 
     interface IPostsPresenter extends BasePresenter {
-        void loadPosts();
+        void loadPosts(boolean forceUpdate);
 
         void openPostDetails(int postId);
     }

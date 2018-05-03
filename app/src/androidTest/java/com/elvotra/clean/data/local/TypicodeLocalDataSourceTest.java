@@ -76,7 +76,7 @@ public class TypicodeLocalDataSourceTest {
 
         localDataSource.savePosts(posts);
 
-        localDataSource.getPosts(new IPostsRepository.LoadPostsCallback() {
+        localDataSource.getPosts(false, new IPostsRepository.LoadPostsCallback() {
             @Override
             public void onPostsLoaded(List<Post> posts) {
                 assertNotNull(posts);
@@ -96,7 +96,7 @@ public class TypicodeLocalDataSourceTest {
 
     @Test
     public void getPosts_shouldReturnError_whenPostsAvailable() {
-        localDataSource.getPosts(new IPostsRepository.LoadPostsCallback() {
+        localDataSource.getPosts(false, new IPostsRepository.LoadPostsCallback() {
             @Override
             public void onPostsLoaded(List<Post> posts) {
                 fail();
@@ -159,7 +159,7 @@ public class TypicodeLocalDataSourceTest {
 
         localDataSource.deleteAllData();
 
-        localDataSource.getPosts(mockLoadPostsCallback);
+        localDataSource.getPosts(false, mockLoadPostsCallback);
 
         verify(mockLoadPostsCallback).onError(anyInt());
         verify(mockLoadPostsCallback, never()).onPostsLoaded(anyList());

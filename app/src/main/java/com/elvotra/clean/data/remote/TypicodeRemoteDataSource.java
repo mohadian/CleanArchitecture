@@ -48,7 +48,7 @@ public class TypicodeRemoteDataSource implements IPostsRepository {
     }
 
     @Override
-    public void getPosts(@NonNull final LoadPostsCallback callback) {
+    public void getPosts(boolean forceUpdate, @NonNull final LoadPostsCallback callback) {
         fetchUsers(new LoadUsersCallback() {
             @Override
             public void onUsersLoaded() {
@@ -128,7 +128,7 @@ public class TypicodeRemoteDataSource implements IPostsRepository {
     }
 
     @Override
-    public void getPost(@NonNull int postId, final @NonNull LoadPostCallback callback) {
+    public void getPost(int postId, final @NonNull LoadPostCallback callback) {
 
     }
 

@@ -1,5 +1,7 @@
 package com.elvotra.clean.presentation.model;
 
+import com.google.common.base.Objects;
+
 import java.util.List;
 
 public class PostDetailsViewItem {
@@ -53,5 +55,24 @@ public class PostDetailsViewItem {
 
     public List<PostCommentViewItem> getComments() {
         return comments;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PostDetailsViewItem that = (PostDetailsViewItem) o;
+        return id == that.id &&
+                Objects.equal(user, that.user) &&
+                Objects.equal(useremail, that.useremail) &&
+                Objects.equal(avatar, that.avatar) &&
+                Objects.equal(title, that.title) &&
+                Objects.equal(body, that.body) &&
+                Objects.equal(comments, that.comments);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id, user, useremail, avatar, title, body, comments);
     }
 }

@@ -17,6 +17,8 @@ import com.elvotra.clean.presentation.ui.adapters.CommentsRecyclerAdapter;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.elvotra.clean.presentation.ui.activities.PostDetailsActivity.POST_ID;
+
 public class PostDetailsFragment extends Fragment implements PostDetailsContract.View {
 
     public interface PostDetailsToolbarCallback {
@@ -24,8 +26,8 @@ public class PostDetailsFragment extends Fragment implements PostDetailsContract
     }
 
     private PostDetailsContract.IPostDetailsPresenter postDetailsPresenter;
-
     private CommentsRecyclerAdapter commentsRecyclerAdapter;
+    private int postId;
 
     @BindView(R.id.post_details_title)
     TextView postTitle;
@@ -40,8 +42,11 @@ public class PostDetailsFragment extends Fragment implements PostDetailsContract
     public PostDetailsFragment() {
     }
 
-    public static PostDetailsFragment newInstance() {
+    public static PostDetailsFragment newInstance(int postId) {
         PostDetailsFragment fragment = new PostDetailsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(POST_ID, postId);
+        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -59,6 +64,11 @@ public class PostDetailsFragment extends Fragment implements PostDetailsContract
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         postsRecyclerView.setLayoutManager(mLayoutManager);
+
+        Bundle args = getArguments();
+        postId = args.getInt(POST_ID);
+
+        postDetailsPresenter.loadPost(postId);
 
         return rootView;
 
@@ -122,5 +132,10 @@ public class PostDetailsFragment extends Fragment implements PostDetailsContract
         errorMessage.setVisibility(View.VISIBLE);
         errorMessage.setText(message);
 
+    }
+
+    @Override
+    public boolean isActive() {
+        return isAdded();
     }
 }

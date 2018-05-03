@@ -18,8 +18,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Mockito.inOrder;
@@ -28,20 +30,22 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PostsRepositoryImpTest {
+    public static final boolean NOT_FORRCE_UPDATE = false;
     private PostsRepositoryImp postsRepository;
+
+    @Captor
+    private ArgumentCaptor<IPostsRepository.LoadPostsCallback> captorPostsCallbackArgument;
+    @Captor
+    private ArgumentCaptor<Boolean> captorForceUpdateArgument;
 
     @Mock
     private TypicodeLocalDataSource mockLocalDataSource;
     @Mock
     private TypicodeRemoteDataSource mockRemoteDataSource;
-
     @Mock
     private IPostsRepository.LoadPostsCallback mockLoadPostsCallback;
     @Mock
     private IPostsRepository.LoadPostCallback mockLoadPostCallback;
-
-    @Captor
-    private ArgumentCaptor<IPostsRepository.LoadPostsCallback> captorPostsCallbackArgument;
 
     @Before
     public void setup() {
@@ -63,11 +67,12 @@ public class PostsRepositoryImpTest {
     public void getPosts_shouldCallLocalDataSource_whenAvailableLocally() {
         List<Post> posts = DomainDataUtil.createPostList(1, 1);
 
-        postsRepository.getPosts(mockLoadPostsCallback);
+        postsRepository.getPosts(NOT_FORRCE_UPDATE, mockLoadPostsCallback);
 
-        verify(mockLocalDataSource).getPosts(captorPostsCallbackArgument.capture());
+        verify(mockLocalDataSource).getPosts(captorForceUpdateArgument.capture(), captorPostsCallbackArgument.capture());
         captorPostsCallbackArgument.getValue().onPostsLoaded(posts);
 
+        assertEquals(NOT_FORRCE_UPDATE, captorForceUpdateArgument.getValue());
         verify(mockLoadPostsCallback).onPostsLoaded(posts);
         verify(mockLoadPostsCallback, never()).onError(anyInt());
     }
@@ -77,20 +82,21 @@ public class PostsRepositoryImpTest {
         List<Post> posts = DomainDataUtil.createPostList(1, 1);
         int statusCode = -1;
 
-        postsRepository.getPosts(mockLoadPostsCallback);
+        postsRepository.getPosts(NOT_FORRCE_UPDATE, mockLoadPostsCallback);
 
-        verify(mockLocalDataSource).getPosts(captorPostsCallbackArgument.capture());
+        verify(mockLocalDataSource).getPosts(captorForceUpdateArgument.capture(), captorPostsCallbackArgument.capture());
         captorPostsCallbackArgument.getValue().onError(statusCode);
 
-        verify(mockRemoteDataSource).getPosts(captorPostsCallbackArgument.capture());
+        verify(mockRemoteDataSource).getPosts(captorForceUpdateArgument.capture(), captorPostsCallbackArgument.capture());
         captorPostsCallbackArgument.getValue().onPostsLoaded(posts);
 
+        assertEquals(NOT_FORRCE_UPDATE, captorForceUpdateArgument.getValue());
         verify(mockLoadPostsCallback).onPostsLoaded(posts);
         verify(mockLoadPostsCallback, never()).onError(anyInt());
 
         InOrder inOrderGetPostsOnDataSources = inOrder(mockLocalDataSource, mockRemoteDataSource);
-        inOrderGetPostsOnDataSources.verify(mockLocalDataSource).getPosts(any(IPostsRepository.LoadPostsCallback.class));
-        inOrderGetPostsOnDataSources.verify(mockRemoteDataSource).getPosts(any(IPostsRepository.LoadPostsCallback.class));
+        inOrderGetPostsOnDataSources.verify(mockLocalDataSource).getPosts(anyBoolean(), any(IPostsRepository.LoadPostsCallback.class));
+        inOrderGetPostsOnDataSources.verify(mockRemoteDataSource).getPosts(anyBoolean(), any(IPostsRepository.LoadPostsCallback.class));
 
         InOrder inOrderUpdateLocalDataSource = inOrder(mockLocalDataSource);
         inOrderUpdateLocalDataSource.verify(mockLocalDataSource).deleteAllData();
@@ -101,20 +107,22 @@ public class PostsRepositoryImpTest {
     public void getPosts_shouldCallError_whenNotAvailableLocallyNotAvailableRemotely() {
         int statusCode = -1;
 
-        postsRepository.getPosts(mockLoadPostsCallback);
+        postsRepository.getPosts(NOT_FORRCE_UPDATE, mockLoadPostsCallback);
 
-        verify(mockLocalDataSource).getPosts(captorPostsCallbackArgument.capture());
+        verify(mockLocalDataSource).getPosts(captorForceUpdateArgument.capture(), captorPostsCallbackArgument.capture());
         captorPostsCallbackArgument.getValue().onError(statusCode);
+        assertEquals(NOT_FORRCE_UPDATE, captorForceUpdateArgument.getValue());
 
-        verify(mockRemoteDataSource).getPosts(captorPostsCallbackArgument.capture());
+        verify(mockRemoteDataSource).getPosts(captorForceUpdateArgument.capture(), captorPostsCallbackArgument.capture());
         captorPostsCallbackArgument.getValue().onError(statusCode);
+        assertEquals(NOT_FORRCE_UPDATE, captorForceUpdateArgument.getValue());
 
         verify(mockLoadPostsCallback).onError(statusCode);
         verify(mockLoadPostsCallback, never()).onPostsLoaded(anyList());
 
         InOrder inOrderGetPostsOnDataSources = inOrder(mockLocalDataSource, mockRemoteDataSource);
-        inOrderGetPostsOnDataSources.verify(mockLocalDataSource).getPosts(any(IPostsRepository.LoadPostsCallback.class));
-        inOrderGetPostsOnDataSources.verify(mockRemoteDataSource).getPosts(any(IPostsRepository.LoadPostsCallback.class));
+        inOrderGetPostsOnDataSources.verify(mockLocalDataSource).getPosts(anyBoolean(), any(IPostsRepository.LoadPostsCallback.class));
+        inOrderGetPostsOnDataSources.verify(mockRemoteDataSource).getPosts(anyBoolean(), any(IPostsRepository.LoadPostsCallback.class));
     }
 
 

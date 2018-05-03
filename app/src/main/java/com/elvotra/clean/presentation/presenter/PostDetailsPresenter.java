@@ -1,47 +1,25 @@
 package com.elvotra.clean.presentation.presenter;
 
-import com.elvotra.clean.domain.executor.IExecutor;
-import com.elvotra.clean.domain.executor.IMainThread;
+import com.elvotra.clean.domain.executor.UseCaseHandler;
 import com.elvotra.clean.domain.model.Post;
-import com.elvotra.clean.domain.repository.IPostsRepository;
 import com.elvotra.clean.domain.usecase.GetPostUseCase;
-import com.elvotra.clean.domain.usecase.IGetPostUseCase;
-import com.elvotra.clean.presentation.contract.AbstractPresenter;
+import com.elvotra.clean.domain.usecase.base.BaseUseCase;
 import com.elvotra.clean.presentation.contract.PostDetailsContract;
 import com.elvotra.clean.presentation.model.PostDetailsViewItem;
 import com.elvotra.clean.presentation.model.mapper.PostDetailsViewItemMapper;
 
-public class PostDetailsPresenter extends AbstractPresenter implements PostDetailsContract.IPostDetailsPresenter, IGetPostUseCase.Callback {
+public class PostDetailsPresenter implements PostDetailsContract.IPostDetailsPresenter {
 
     private PostDetailsContract.View view;
-
-    private IPostsRepository IPostsRepository;
-
+    private GetPostUseCase getPostUseCase;
+    private final UseCaseHandler useCaseHandler;
     private int postId;
 
-    public PostDetailsPresenter(
-            int postId,
-            IExecutor IExecutor,
-            IMainThread IMainThread,
-            PostDetailsContract.View view,
-            IPostsRepository repository) {
-        super(IExecutor, IMainThread);
-        this.postId = postId;
+    public PostDetailsPresenter(PostDetailsContract.View view, GetPostUseCase getPostUseCase, UseCaseHandler mUseCaseHandler) {
         this.view = view;
-        this.IPostsRepository = repository;
-
+        this.getPostUseCase = getPostUseCase;
+        this.useCaseHandler = mUseCaseHandler;
         this.view.setPresenter(this);
-    }
-
-    @Override
-    public void onPostRetrieved(Post post) {
-        view.hideProgress();
-        if (post == null) {
-            view.showNoResults();
-        } else {
-            PostDetailsViewItem postDetailsViewItem = PostDetailsViewItemMapper.getInstance().transform(post);
-            view.showPostDetails(postDetailsViewItem);
-        }
     }
 
     @Override
@@ -57,36 +35,41 @@ public class PostDetailsPresenter extends AbstractPresenter implements PostDetai
 
     private void executeGetPostsUseCase(int postId) {
         view.showProgress();
-        IGetPostUseCase getPostsUseCase = new GetPostUseCase(
-                postId,
-                iExecutor,
-                iMainThread,
-                this,
-                IPostsRepository
-        );
 
-        getPostsUseCase.execute();
+        GetPostUseCase.RequestValues requestValue = new GetPostUseCase.RequestValues(postId);
+
+        useCaseHandler.execute(getPostUseCase, requestValue,
+                new BaseUseCase.UseCaseCallback<GetPostUseCase.ResponseValue>() {
+
+                    @Override
+                    public void onSuccess(GetPostUseCase.ResponseValue response) {
+                        if (!view.isActive()) {
+                            return;
+                        }
+
+                        Post post = response.getPost();
+                        processRetrievedData(post);
+                    }
+
+                    @Override
+                    public void onError(int statusCode) {
+                        if (!view.isActive()) {
+                            return;
+                        }
+
+                        view.hideProgress();
+                        view.showError("Server returned " + statusCode + " error");
+                    }
+                });
     }
 
-    @Override
-    public void destroy() {
-        view = null;
-        IPostsRepository = null;
-    }
-
-    @Override
-    public void onError(String message) {
+    private void processRetrievedData(Post post) {
         view.hideProgress();
-        view.showError(message);
-    }
-
-    @Override
-    public void onRetrievalFailed(int statusCode) {
-        view.hideProgress();
-        if (statusCode == -1) {
-            view.showError("Cannot connect to the server. \nPlease try again later...");
+        if (post == null) {
+            view.showNoResults();
         } else {
-            view.showError("Server returned " + statusCode + " error");
+            PostDetailsViewItem postDetailsViewItem = PostDetailsViewItemMapper.getInstance().transform(post);
+            view.showPostDetails(postDetailsViewItem);
         }
     }
 }
