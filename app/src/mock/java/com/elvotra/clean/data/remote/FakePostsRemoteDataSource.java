@@ -11,19 +11,19 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FakeTasksRemoteDataSource implements IPostsRepository {
+public class FakePostsRemoteDataSource implements IPostsRepository {
 
-    private static FakeTasksRemoteDataSource INSTANCE;
+    private static FakePostsRemoteDataSource INSTANCE;
 
     private static Map<Integer, Post> postsHash = new LinkedHashMap<>();
 
-    private FakeTasksRemoteDataSource() {
+    private FakePostsRemoteDataSource() {
         postsHash = new HashMap<>();
     }
 
-    public static FakeTasksRemoteDataSource getInstance() {
+    public static FakePostsRemoteDataSource getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new FakeTasksRemoteDataSource();
+            INSTANCE = new FakePostsRemoteDataSource();
         }
         return INSTANCE;
     }

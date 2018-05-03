@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 
 import com.elvotra.clean.data.local.TypicodeDatabase;
 import com.elvotra.clean.data.local.TypicodeLocalDataSource;
-import com.elvotra.clean.data.remote.FakeTasksRemoteDataSource;
+import com.elvotra.clean.data.remote.FakePostsRemoteDataSource;
 import com.elvotra.clean.data.repository.PostsRepositoryImp;
 import com.elvotra.clean.domain.executor.UseCaseHandler;
 import com.elvotra.clean.domain.usecase.GetPostUseCase;
@@ -31,7 +31,7 @@ public class Injector {
     private static PostsRepositoryImp providePostsRepository(@NonNull Context context) {
         checkNotNull(context);
         TypicodeDatabase database = TypicodeDatabase.getInstance(context);
-        return PostsRepositoryImp.getInstance(FakeTasksRemoteDataSource.getInstance(),
+        return PostsRepositoryImp.getInstance(FakePostsRemoteDataSource.getInstance(),
                 TypicodeLocalDataSource.getInstance(new AppExecutors(), database.typicodeDao()));
     }
 }

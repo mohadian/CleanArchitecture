@@ -52,10 +52,10 @@ public class TypicodeLocalDataSourceTest {
         typicodeDatabase = Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getContext(),
                 TypicodeDatabase.class)
                 .build();
-        TypicodeDao tasksDao = typicodeDatabase.typicodeDao();
+        TypicodeDao typicodeDao = typicodeDatabase.typicodeDao();
 
         TypicodeLocalDataSource.destroyInstance();
-        localDataSource = TypicodeLocalDataSource.getInstance(new SingleExecutors(), tasksDao);
+        localDataSource = TypicodeLocalDataSource.getInstance(new SingleExecutors(), typicodeDao);
     }
 
     @After
