@@ -17,20 +17,6 @@ import retrofit2.Response;
 
 public class TypicodeRemoteDataSource implements IPostsRepository {
 
-    private interface LoadUsersCallback {
-
-        void onUsersLoaded();
-
-        void onError(int statusCode);
-    }
-
-    private interface LoadPostCommentsCallback {
-
-        void onPostCommentsLoaded();
-
-        void onError(int statusCode);
-    }
-
     private static TypicodeRemoteDataSource INSTANCE;
 
     private List<UserData> userDataListCached;
@@ -134,11 +120,21 @@ public class TypicodeRemoteDataSource implements IPostsRepository {
 
     @Override
     public void deleteAllData() {
-
     }
 
     @Override
     public void savePosts(List<Post> posts) {
+    }
 
+    private interface LoadUsersCallback {
+        void onUsersLoaded();
+
+        void onError(int statusCode);
+    }
+
+    private interface LoadPostCommentsCallback {
+        void onPostCommentsLoaded();
+
+        void onError(int statusCode);
     }
 }
