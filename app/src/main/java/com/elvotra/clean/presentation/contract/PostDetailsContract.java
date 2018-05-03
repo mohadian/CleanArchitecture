@@ -9,6 +9,8 @@ public interface PostDetailsContract {
         void showPostDetails(PostDetailsViewItem postDetailsViewItem);
 
         void showNoResults();
+
+        boolean isActive();
     }
 
     interface IPostDetailsPresenter extends BasePresenter {

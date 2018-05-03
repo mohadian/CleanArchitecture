@@ -26,6 +26,7 @@ public class PostsResponseMapper {
     private PostsResponseMapper() {
     }
 
+    //region Data to Domain models
     public List<Post> transform(List<PostData> response, List<UserData> userData, List<PostCommentData> postCommentData) {
         List<Post> result = new ArrayList<>(response.size());
         Map<Integer, User> userDataMap = createMap(userData);
@@ -64,4 +65,6 @@ public class PostsResponseMapper {
         }
         return userDataMap;
     }
+
+    //endregion
 }

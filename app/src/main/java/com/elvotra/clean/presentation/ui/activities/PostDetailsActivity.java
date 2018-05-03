@@ -22,16 +22,9 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.elvotra.clean.R;
-import com.elvotra.clean.data.local.TypicodeDatabase;
-import com.elvotra.clean.data.local.TypicodeLocalDataSource;
-import com.elvotra.clean.data.remote.TypicodeRemoteDataSource;
-import com.elvotra.clean.data.repository.PostsRepositoryImp;
-import com.elvotra.clean.domain.executor.ThreadExecutor;
-import com.elvotra.clean.presentation.contract.PostDetailsContract.IPostDetailsPresenter;
+import com.elvotra.clean.presentation.di.Injector;
 import com.elvotra.clean.presentation.presenter.PostDetailsPresenter;
 import com.elvotra.clean.presentation.ui.fragments.PostDetailsFragment;
-import com.elvotra.clean.threading.AppExecutors;
-import com.elvotra.clean.threading.MainThreadImp;
 import com.elvotra.clean.utils.ActivityUtils;
 import com.elvotra.clean.utils.PaletteUtils;
 
@@ -80,20 +73,13 @@ public class PostDetailsActivity extends AppCompatActivity implements PostDetail
 
         if (postsListFragment == null) {
             // Create the fragment
-            postsListFragment = PostDetailsFragment.newInstance();
+            postsListFragment = PostDetailsFragment.newInstance(postId);
             ActivityUtils.addFragmentToActivity(
                     getSupportFragmentManager(), postsListFragment, R.id.contentPostDetailsFrame);
         }
 
-        IPostDetailsPresenter presenter = new PostDetailsPresenter(postId,
-                ThreadExecutor.getInstance(),
-                MainThreadImp.getInstance(),
-                postsListFragment,
-                PostsRepositoryImp.getInstance(TypicodeRemoteDataSource.getInstance(),
-                        TypicodeLocalDataSource.getInstance(new AppExecutors(), TypicodeDatabase.getInstance(PostDetailsActivity.this).typicodeDao())));
+        new PostDetailsPresenter(postsListFragment, Injector.provideGetPostUseCase(this), Injector.provideUseCaseHandler());
 
-        presenter.loadPost(postId);
-        //handleOffsetChanged(appBarLayout, 0);
         appBarLayout.addOnOffsetChangedListener(this);
 
         startAlphaAnimation(toolbarTitle, 0, View.INVISIBLE);

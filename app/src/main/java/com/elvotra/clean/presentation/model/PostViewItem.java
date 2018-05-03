@@ -1,5 +1,7 @@
 package com.elvotra.clean.presentation.model;
 
+import com.google.common.base.Objects;
+
 public class PostViewItem {
     private int id;
 
@@ -51,5 +53,24 @@ public class PostViewItem {
 
     public String getCommentsCount() {
         return commentsCount;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PostViewItem that = (PostViewItem) o;
+        return id == that.id &&
+                Objects.equal(user, that.user) &&
+                Objects.equal(useremail, that.useremail) &&
+                Objects.equal(avatar, that.avatar) &&
+                Objects.equal(title, that.title) &&
+                Objects.equal(body, that.body) &&
+                Objects.equal(commentsCount, that.commentsCount);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id, user, useremail, avatar, title, body, commentsCount);
     }
 }

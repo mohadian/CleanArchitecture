@@ -1,6 +1,7 @@
 package com.elvotra.clean.data.local;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 
 import com.elvotra.clean.data.local.model.CommentEntity;
 import com.elvotra.clean.data.local.model.PostEntity;
@@ -39,12 +40,11 @@ public class TypicodeLocalDataSource implements IPostsRepository {
     }
 
     @Override
-    public void getPosts(@NonNull final LoadPostsCallback callback) {
+    public void getPosts(boolean forceUpdate, @NonNull final LoadPostsCallback callback) {
         Runnable runnable = new Runnable() {
 
             @Override
             public void run() {
-
                 final List<PostEntity> postEntities = typicodeDao.getPosts();
                 final List<UserEntity> userEntities = typicodeDao.getUsers();
                 final List<CommentEntity> commentsEntities = typicodeDao.getComments();
@@ -66,25 +66,29 @@ public class TypicodeLocalDataSource implements IPostsRepository {
     }
 
     @Override
-    public void getPost(@NonNull final int postId, final @NonNull LoadPostCallback callback) {
+    public void getPost(final int postId, final @NonNull LoadPostCallback callback) {
         Runnable runnable = new Runnable() {
 
             @Override
             public void run() {
                 final PostEntity postEntity = typicodeDao.getPostById(postId);
-                final UserEntity userEntity = typicodeDao.getUserById(postEntity.getUserId());
-                final List<CommentEntity> commentsEntities = typicodeDao.getCommentsByPostId(postId);
-                appExecutors.mainThread().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (postEntity==null) {
-                            callback.onError(-1);
-                        } else {
-                            Post postArrayList = PostsEntityDataMapper.getInstance().transform(postEntity, userEntity, commentsEntities);
-                            callback.onPostLoaded(postArrayList);
+                if(postEntity != null) {
+                    final UserEntity userEntity = typicodeDao.getUserById(postEntity.getUserId());
+                    final List<CommentEntity> commentsEntities = typicodeDao.getCommentsByPostId(postId);
+                    appExecutors.mainThread().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (postEntity == null) {
+                                callback.onError(-1);
+                            } else {
+                                Post postArrayList = PostsEntityDataMapper.getInstance().transform(postEntity, userEntity, commentsEntities);
+                                callback.onPostLoaded(postArrayList);
+                            }
                         }
-                    }
-                });
+                    });
+                } else {
+                    callback.onError(-1);
+                }
             }
         };
 
@@ -93,48 +97,57 @@ public class TypicodeLocalDataSource implements IPostsRepository {
 
     @Override
     public void deleteAllData() {
-        Runnable saveRunnable = new Runnable() {
+        appExecutors.diskIO().execute(new Runnable() {
             @Override
             public void run() {
                 typicodeDao.deleteUsers();
                 typicodeDao.deletePosts();
                 typicodeDao.deleteComments();
             }
-        };
-        appExecutors.diskIO().execute(saveRunnable);
+        });
     }
 
     @Override
-    public void savePost(final Post post) {
-        Runnable saveRunnable = new Runnable() {
+    public void savePosts(final List<Post> posts) {
+        for (Post post : posts) {
+            savePost(post);
+            saveUser(post.getUser());
+            for (Comment comment : post.getComments()) {
+                saveComment(comment);
+            }
+        }
+    }
+
+    private void savePost(final Post post) {
+        appExecutors.diskIO().execute(new Runnable() {
             @Override
             public void run() {
                 typicodeDao.insertUser(PostsEntityDataMapper.getInstance().transformToUserEntity(post));
                 typicodeDao.insertPost(PostsEntityDataMapper.getInstance().transform(post));
             }
-        };
-        appExecutors.diskIO().execute(saveRunnable);
+        });
     }
 
-    @Override
-    public void saveUser(final User user) {
-        Runnable saveRunnable = new Runnable() {
+    private void saveUser(final User user) {
+        appExecutors.diskIO().execute(new Runnable() {
             @Override
             public void run() {
                 typicodeDao.insertUser(PostsEntityDataMapper.getInstance().transform(user));
             }
-        };
-        appExecutors.diskIO().execute(saveRunnable);
+        });
     }
 
-    @Override
-    public void saveComment(final Comment comment) {
-        Runnable saveRunnable = new Runnable() {
+    private void saveComment(final Comment comment) {
+        appExecutors.diskIO().execute(new Runnable() {
             @Override
             public void run() {
                 typicodeDao.insertComment(PostsEntityDataMapper.getInstance().transform(comment));
             }
-        };
-        appExecutors.diskIO().execute(saveRunnable);
+        });
+    }
+
+    @VisibleForTesting
+    static void destroyInstance() {
+        INSTANCE = null;
     }
 }

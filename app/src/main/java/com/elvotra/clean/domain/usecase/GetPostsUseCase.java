@@ -1,48 +1,58 @@
 package com.elvotra.clean.domain.usecase;
 
-import com.elvotra.clean.domain.executor.IExecutor;
-import com.elvotra.clean.domain.executor.IMainThread;
 import com.elvotra.clean.domain.model.Post;
 import com.elvotra.clean.domain.repository.IPostsRepository;
-import com.elvotra.clean.domain.usecase.IGetPostsUseCase;
-import com.elvotra.clean.domain.usecase.base.AbstractUseCase;
+import com.elvotra.clean.domain.usecase.base.BaseUseCase;
 
 import java.util.List;
 
-public class GetPostsUseCase extends AbstractUseCase implements IGetPostsUseCase {
-    IGetPostsUseCase.Callback callback;
+public class GetPostsUseCase extends BaseUseCase<GetPostsUseCase.RequestValues, GetPostsUseCase.ResponseValue> {
     IPostsRepository repository;
 
-    public GetPostsUseCase(IExecutor threadIExecutor,
-                           IMainThread IMainThread,
-                           Callback callback, IPostsRepository repository) {
-        super(threadIExecutor, IMainThread);
-        this.callback = callback;
+    public GetPostsUseCase(IPostsRepository repository) {
         this.repository = repository;
     }
 
     @Override
-    public void run() {
-        repository.getPosts(new IPostsRepository.LoadPostsCallback() {
+    protected void executeUseCase(RequestValues requestValues) {
+        repository.getPosts(requestValues.isForceUpdate(), new IPostsRepository.LoadPostsCallback() {
             @Override
             public void onPostsLoaded(final List<Post> posts) {
-                IMainThread.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        callback.onPostsRetrieved(posts);
-                    }
-                });
+                ResponseValue responseValue = new ResponseValue(posts);
+                getUseCaseCallback().onSuccess(responseValue);
             }
 
             @Override
             public void onError(final int statusCode) {
-                IMainThread.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        callback.onRetrievalFailed(statusCode);
-                    }
-                });
+                getUseCaseCallback().onError(statusCode);
             }
         });
+    }
+
+    public static final class RequestValues implements BaseUseCase.RequestValues {
+
+        private final boolean mForceUpdate;
+
+        public RequestValues(boolean forceUpdate) {
+            mForceUpdate = forceUpdate;
+        }
+
+        public boolean isForceUpdate() {
+            return mForceUpdate;
+        }
+
+    }
+
+    public static final class ResponseValue implements BaseUseCase.ResponseValue {
+
+        private final List<Post> posts;
+
+        public ResponseValue(List<Post> posts) {
+            this.posts = posts;
+        }
+
+        public List<Post> getPosts() {
+            return posts;
+        }
     }
 }

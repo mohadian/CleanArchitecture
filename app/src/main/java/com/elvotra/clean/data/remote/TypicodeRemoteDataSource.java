@@ -6,9 +6,7 @@ import com.elvotra.clean.data.remote.model.PostCommentData;
 import com.elvotra.clean.data.remote.model.PostData;
 import com.elvotra.clean.data.remote.model.UserData;
 import com.elvotra.clean.data.remote.model.mapper.PostsResponseMapper;
-import com.elvotra.clean.domain.model.Comment;
 import com.elvotra.clean.domain.model.Post;
-import com.elvotra.clean.domain.model.User;
 import com.elvotra.clean.domain.repository.IPostsRepository;
 
 import java.util.List;
@@ -19,21 +17,21 @@ import retrofit2.Response;
 
 public class TypicodeRemoteDataSource implements IPostsRepository {
 
-    public interface LoadUsersCallback {
+    private interface LoadUsersCallback {
 
         void onUsersLoaded();
 
         void onError(int statusCode);
     }
 
-    public interface LoadPostCommentsCallback {
+    private interface LoadPostCommentsCallback {
 
         void onPostCommentsLoaded();
 
         void onError(int statusCode);
     }
 
-    static TypicodeRemoteDataSource INSTANCE;
+    private static TypicodeRemoteDataSource INSTANCE;
 
     private List<UserData> userDataListCached;
     private List<PostData> postDataListCached;
@@ -50,7 +48,7 @@ public class TypicodeRemoteDataSource implements IPostsRepository {
     }
 
     @Override
-    public void getPosts(@NonNull final LoadPostsCallback callback) {
+    public void getPosts(boolean forceUpdate, @NonNull final LoadPostsCallback callback) {
         fetchUsers(new LoadUsersCallback() {
             @Override
             public void onUsersLoaded() {
@@ -130,7 +128,7 @@ public class TypicodeRemoteDataSource implements IPostsRepository {
     }
 
     @Override
-    public void getPost(@NonNull int postId, final @NonNull LoadPostCallback callback) {
+    public void getPost(int postId, final @NonNull LoadPostCallback callback) {
 
     }
 
@@ -140,17 +138,7 @@ public class TypicodeRemoteDataSource implements IPostsRepository {
     }
 
     @Override
-    public void savePost(Post post) {
-
-    }
-
-    @Override
-    public void saveUser(User user) {
-
-    }
-
-    @Override
-    public void saveComment(Comment comment) {
+    public void savePosts(List<Post> posts) {
 
     }
 }

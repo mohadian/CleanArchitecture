@@ -1,38 +1,26 @@
 package com.elvotra.clean.presentation.presenter;
 
-import com.elvotra.clean.domain.executor.IExecutor;
-import com.elvotra.clean.domain.executor.IMainThread;
+import com.elvotra.clean.domain.executor.UseCaseHandler;
 import com.elvotra.clean.domain.model.Post;
-import com.elvotra.clean.domain.repository.IPostsRepository;
 import com.elvotra.clean.domain.usecase.GetPostsUseCase;
-import com.elvotra.clean.domain.usecase.IGetPostsUseCase;
-import com.elvotra.clean.presentation.contract.AbstractPresenter;
+import com.elvotra.clean.domain.usecase.base.BaseUseCase;
 import com.elvotra.clean.presentation.contract.PostsContract;
 import com.elvotra.clean.presentation.model.PostViewItem;
 import com.elvotra.clean.presentation.model.mapper.PostViewItemMapper;
 
 import java.util.List;
 
-public class PostsPresenter extends AbstractPresenter implements PostsContract.IPostsPresenter, IGetPostsUseCase.Callback {
+public class PostsPresenter implements PostsContract.IPostsPresenter {
 
     private PostsContract.View view;
+    private GetPostsUseCase getPostsUseCase;
+    private final UseCaseHandler useCaseHandler;
 
-    private IPostsRepository IPostsRepository;
-
-    public PostsPresenter(IExecutor IExecutor,
-                          IMainThread IMainThread,
-                          PostsContract.View view,
-                          IPostsRepository repository) {
-        super(IExecutor, IMainThread);
+    public PostsPresenter(PostsContract.View view, GetPostsUseCase getPostsUseCase, UseCaseHandler mUseCaseHandler) {
         this.view = view;
-        this.IPostsRepository = repository;
-
+        this.getPostsUseCase = getPostsUseCase;
+        this.useCaseHandler = mUseCaseHandler;
         this.view.setPresenter(this);
-    }
-
-    @Override
-    public void loadPosts() {
-        executeGetPostsUseCase();
     }
 
     @Override
@@ -42,51 +30,51 @@ public class PostsPresenter extends AbstractPresenter implements PostsContract.I
 
     @Override
     public void resume() {
-        executeGetPostsUseCase();
+        executeGetPostsUseCase(false);
     }
 
-    private void executeGetPostsUseCase() {
+    @Override
+    public void loadPosts(boolean forceUpdate) {
+        executeGetPostsUseCase(forceUpdate);
+    }
+
+    private void executeGetPostsUseCase(boolean forceUpdate) {
         view.showProgress();
-        IGetPostsUseCase getPostsUseCase = new GetPostsUseCase(
-                IExecutor,
-                IMainThread,
-                this,
-                IPostsRepository
-        );
 
-        getPostsUseCase.execute();
+        GetPostsUseCase.RequestValues requestValue = new GetPostsUseCase.RequestValues(forceUpdate);
+
+        useCaseHandler.execute(getPostsUseCase, requestValue,
+                new BaseUseCase.UseCaseCallback<GetPostsUseCase.ResponseValue>() {
+
+                    @Override
+                    public void onSuccess(GetPostsUseCase.ResponseValue response) {
+                        if (!view.isActive()) {
+                            return;
+                        }
+
+                        List<Post> posts = response.getPosts();
+                        processRetrievedData(posts);
+                    }
+
+                    @Override
+                    public void onError(int statusCode) {
+                        if (!view.isActive()) {
+                            return;
+                        }
+
+                        view.hideProgress();
+                        view.showError("Server returned " + statusCode + " error");
+                    }
+                });
     }
 
-    @Override
-    public void destroy() {
-        view = null;
-        IPostsRepository = null;
-    }
-
-    @Override
-    public void onError(String message) {
+    private void processRetrievedData(List<Post> posts) {
         view.hideProgress();
-        view.showError(message);
-    }
-
-    @Override
-    public void onPostsRetrieved(List<Post> posts) {
-        view.hideProgress();
-        if (posts.size() == 0) {
+        if (posts == null || posts.isEmpty()) {
             view.showNoResults();
         } else {
             List<PostViewItem> postViewItems = PostViewItemMapper.getInstance().transform(posts);
             view.showPostsList(postViewItems);
-        }
-    }
-
-    @Override
-    public void onRetrievalFailed(int statusCode) {
-        view.hideProgress();
-        if (statusCode == -1) {
-            view.showError("Cannot connect to the server. \nPlease try again later...");
-        } else {
-            view.showError("Server returned " + statusCode + " error");
         }
     }
 }
