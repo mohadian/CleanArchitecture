@@ -30,10 +30,10 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class PostsRepositoryImpTest {
+public class PostsRepositoryTest {
     private static final boolean NOT_FORRCE_UPDATE = false;
     private static final boolean FORRCE_UPDATE = true;
-    private PostsRepositoryImp postsRepository;
+    private PostsRepository postsRepository;
 
     @Captor
     private ArgumentCaptor<IPostsRepository.LoadPostsCallback> captorPostsCallbackArgument;
@@ -51,13 +51,13 @@ public class PostsRepositoryImpTest {
 
     @Before
     public void setup() {
-        PostsRepositoryImp.destroyInstance();
-        postsRepository = PostsRepositoryImp.getInstance(mockRemoteDataSource, mockLocalDataSource);
+        PostsRepository.destroyInstance();
+        postsRepository = PostsRepository.getInstance(mockRemoteDataSource, mockLocalDataSource);
     }
 
     @After
     public void cleanUp() {
-        PostsRepositoryImp.destroyInstance();
+        PostsRepository.destroyInstance();
     }
 
     @Test

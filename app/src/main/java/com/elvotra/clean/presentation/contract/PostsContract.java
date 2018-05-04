@@ -7,7 +7,6 @@ import java.util.List;
 public interface PostsContract {
 
     interface View extends BaseView<IPostsPresenter> {
-
         void showPostsList(List<PostViewItem> postViewItems);
 
         void showPostDetails(int postId);

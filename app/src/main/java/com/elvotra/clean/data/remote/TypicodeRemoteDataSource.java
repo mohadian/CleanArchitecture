@@ -8,6 +8,7 @@ import com.elvotra.clean.data.remote.model.UserData;
 import com.elvotra.clean.data.remote.model.mapper.PostsResponseMapper;
 import com.elvotra.clean.domain.model.Post;
 import com.elvotra.clean.domain.repository.IPostsRepository;
+import com.elvotra.clean.utils.Constants;
 
 import java.util.List;
 
@@ -18,6 +19,8 @@ import retrofit2.Response;
 public class TypicodeRemoteDataSource implements IPostsRepository {
 
     private static TypicodeRemoteDataSource INSTANCE;
+
+    private ITypicodeApi client;
 
     private List<UserData> userDataListCached;
     private List<PostData> postDataListCached;
@@ -31,6 +34,7 @@ public class TypicodeRemoteDataSource implements IPostsRepository {
     }
 
     private TypicodeRemoteDataSource() {
+        client = TypicodeService.createService(Constants.TYPICODE_API_BASE_URL,ITypicodeApi.class);
     }
 
     @Override
@@ -59,8 +63,6 @@ public class TypicodeRemoteDataSource implements IPostsRepository {
     }
 
     private void fetchPosts(@NonNull final LoadPostsCallback callback) {
-        ITypicodeApi client = TypicodeService.createService(ITypicodeApi.class);
-
         Call<List<PostData>> call = client.getPosts();
         call.enqueue(new Callback<List<PostData>>() {
             @Override
@@ -78,8 +80,6 @@ public class TypicodeRemoteDataSource implements IPostsRepository {
     }
 
     private void fetchUsers(final LoadUsersCallback loadUsersCallback) {
-        ITypicodeApi client = TypicodeService.createService(ITypicodeApi.class);
-
         Call<List<UserData>> call = client.getUsers();
         call.enqueue(new Callback<List<UserData>>() {
             @Override
@@ -96,8 +96,6 @@ public class TypicodeRemoteDataSource implements IPostsRepository {
     }
 
     private void fetchComments(final LoadPostCommentsCallback postCommentsCallback) {
-        ITypicodeApi client = TypicodeService.createService(ITypicodeApi.class);
-
         Call<List<PostCommentData>> call = client.getComments();
         call.enqueue(new Callback<List<PostCommentData>>() {
             @Override

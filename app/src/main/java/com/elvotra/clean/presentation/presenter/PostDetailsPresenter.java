@@ -8,6 +8,8 @@ import com.elvotra.clean.presentation.contract.PostDetailsContract;
 import com.elvotra.clean.presentation.model.PostDetailsViewItem;
 import com.elvotra.clean.presentation.model.mapper.PostDetailsViewItemMapper;
 
+import timber.log.Timber;
+
 public class PostDetailsPresenter implements PostDetailsContract.IPostDetailsPresenter {
 
     private PostDetailsContract.View view;
@@ -44,6 +46,8 @@ public class PostDetailsPresenter implements PostDetailsContract.IPostDetailsPre
                     @Override
                     public void onSuccess(GetPostUseCase.ResponseValue response) {
                         if (!view.isActive()) {
+                            Timber.d("View is not active");
+
                             return;
                         }
 
@@ -54,6 +58,8 @@ public class PostDetailsPresenter implements PostDetailsContract.IPostDetailsPre
                     @Override
                     public void onError(int statusCode) {
                         if (!view.isActive()) {
+                            Timber.d("View is not active");
+
                             return;
                         }
 

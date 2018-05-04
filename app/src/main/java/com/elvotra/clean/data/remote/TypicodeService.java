@@ -4,19 +4,15 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class TypicodeService {
-    static String API_BASE_URL = "http://jsonplaceholder.typicode.com/";
 
-    private static Retrofit.Builder builder =
-            new Retrofit.Builder()
-                    .baseUrl(API_BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create());
+    private static Retrofit.Builder builder;
 
-    private static Retrofit retrofit = builder.build();
+    private static Retrofit retrofit;
 
-    public static <S> S createService(Class<S> serviceClass) {
+    public static <S> S createService(String baseUri, Class<S> serviceClass) {
 
         builder = new Retrofit.Builder()
-                .baseUrl(API_BASE_URL)
+                .baseUrl(baseUri)
                 .addConverterFactory(GsonConverterFactory.create());
 
         retrofit = builder.build();

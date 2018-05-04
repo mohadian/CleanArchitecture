@@ -30,6 +30,7 @@ import com.elvotra.clean.utils.PaletteUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 public class PostDetailsActivity extends AppCompatActivity implements PostDetailsFragment.PostDetailsToolbarCallback
         , AppBarLayout.OnOffsetChangedListener {
@@ -101,6 +102,8 @@ public class PostDetailsActivity extends AppCompatActivity implements PostDetail
 
     @Override
     public void updateToolbar(String avatarUrl, String username) {
+        Timber.d("Trying to update the toolbar data");
+
         Glide.with(this)
                 .asBitmap()
                 .load(avatarUrl)
@@ -109,6 +112,7 @@ public class PostDetailsActivity extends AppCompatActivity implements PostDetail
                     @Override
                     public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
                         setToolbarColor(resource);
+                        imageToolbar.setVisibility(View.VISIBLE);
                         imageToolbar.setImageBitmap(resource);
                     }
                 });
@@ -174,6 +178,7 @@ public class PostDetailsActivity extends AppCompatActivity implements PostDetail
     }
 
     public void setToolbarColor(Bitmap bitmap) {
+        Timber.d("Trying to update the toolbar color");
         Palette p = PaletteUtils.createPaletteSync(bitmap);
         Palette.Swatch lightVibrantSwatch = p.getVibrantSwatch();
         Palette.Swatch darkVibrantSwatch = p.getMutedSwatch();
