@@ -84,7 +84,6 @@ public class PostsListFragment extends Fragment implements PostsContract.View {
     @Override
     public void onResume() {
         super.onResume();
-        postsPresenter.resume();
     }
 
     @Override
