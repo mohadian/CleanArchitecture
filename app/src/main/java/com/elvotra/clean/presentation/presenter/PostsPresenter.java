@@ -10,6 +10,8 @@ import com.elvotra.clean.presentation.model.mapper.PostViewItemMapper;
 
 import java.util.List;
 
+import timber.log.Timber;
+
 public class PostsPresenter implements PostsContract.IPostsPresenter {
 
     private PostsContract.View view;
@@ -49,6 +51,8 @@ public class PostsPresenter implements PostsContract.IPostsPresenter {
                     @Override
                     public void onSuccess(GetPostsUseCase.ResponseValue response) {
                         if (!view.isActive()) {
+                            Timber.d("View is not active");
+
                             return;
                         }
 
@@ -59,6 +63,8 @@ public class PostsPresenter implements PostsContract.IPostsPresenter {
                     @Override
                     public void onError(int statusCode) {
                         if (!view.isActive()) {
+                            Timber.d("View is not active");
+
                             return;
                         }
 

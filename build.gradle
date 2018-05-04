@@ -27,14 +27,14 @@ task clean(type: Delete) {
 ext {
     // Sdk and tools
     // Support library and architecture components support minSdk 14 and above.
-    minSdkVersion = 15
+    minSdkVersion = 16
     targetSdkVersion = 27
     compileSdkVersion = 27
-    buildToolsVersion = '27.0.2'
+    buildToolsVersion = '27.1.1'
 
     // App dependencies
-    supportLibraryVersion = '27.0.2'
-    constraitLayoutVersion = '1.0.2'
+    supportLibraryVersion = '27.1.1'
+    constraitLayoutVersion = '1.1.0'
     guavaVersion = '18.0'
     junitVersion = '4.12'
     mockitoVersion = '1.10.19'
@@ -47,5 +47,7 @@ ext {
     retrofitVersion='2.4.0'
     gsonVersion='2.8.'
     glideVersion='4.6.1'
+    lottieVersion='2.5.4'
+    timberVersion='4.7.0'
     butterknifeVersion='8.8.1'
 }

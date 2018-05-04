@@ -48,7 +48,7 @@ public class PostsRecyclerAdapter
         @BindView(R.id.list_item_post_comments_count)
         TextView postCommentsCount;
 
-        public ViewHolder(View item) {
+        ViewHolder(View item) {
             super(item);
 
             ButterKnife.bind(this, item);
@@ -100,11 +100,8 @@ public class PostsRecyclerAdapter
 
     @Override
     public int getItemCount() {
-
         return postViewItems.size();
-
     }
-
 }
 
 

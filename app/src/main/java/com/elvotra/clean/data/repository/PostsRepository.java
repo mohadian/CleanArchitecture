@@ -8,39 +8,43 @@ import com.elvotra.clean.domain.repository.IPostsRepository;
 
 import java.util.List;
 
-public class PostsRepositoryImp implements IPostsRepository {
+public class PostsRepository implements IPostsRepository {
 
     private IPostsRepository postsRemoteRepository;
     private IPostsRepository postsLocalRepository;
 
-    private static PostsRepositoryImp INSTANCE;
+    private static PostsRepository INSTANCE;
 
-    public static PostsRepositoryImp getInstance(IPostsRepository postsRemoteRepository, IPostsRepository postsLocalRepository) {
+    public static PostsRepository getInstance(IPostsRepository postsRemoteRepository, IPostsRepository postsLocalRepository) {
         if (INSTANCE == null) {
-            INSTANCE = new PostsRepositoryImp(postsRemoteRepository, postsLocalRepository);
+            INSTANCE = new PostsRepository(postsRemoteRepository, postsLocalRepository);
         }
         return INSTANCE;
     }
 
-    public PostsRepositoryImp(IPostsRepository postsRemoteRepository, IPostsRepository postsLocalRepository) {
+    private PostsRepository(IPostsRepository postsRemoteRepository, IPostsRepository postsLocalRepository) {
         this.postsRemoteRepository = postsRemoteRepository;
         this.postsLocalRepository = postsLocalRepository;
     }
 
     @Override
-    public void getPosts(final boolean forrceUpdate, @NonNull final LoadPostsCallback callback) {
-        if(forrceUpdate){
-            loadDataFromRemoteDataSource(forrceUpdate, callback);
+    public void getPosts(final boolean forceUpdate, @NonNull final LoadPostsCallback callback) {
+        if(forceUpdate){
+            loadDataFromRemoteDataSource(forceUpdate, callback);
         } else {
-            postsLocalRepository.getPosts(forrceUpdate, new LoadPostsCallback() {
+            postsLocalRepository.getPosts(forceUpdate, new LoadPostsCallback() {
                 @Override
                 public void onPostsLoaded(List<Post> posts) {
-                    callback.onPostsLoaded(posts);
+                    if(posts.isEmpty()){
+                        loadDataFromRemoteDataSource(forceUpdate, callback);
+                    } else {
+                        callback.onPostsLoaded(posts);
+                    }
                 }
 
                 @Override
                 public void onError(int statusCode) {
-                    loadDataFromRemoteDataSource(forrceUpdate, callback);
+                    loadDataFromRemoteDataSource(forceUpdate, callback);
                 }
             });
         }

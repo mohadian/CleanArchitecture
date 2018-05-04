@@ -15,6 +15,8 @@ import com.elvotra.clean.threading.AppExecutors;
 
 import java.util.List;
 
+import timber.log.Timber;
+
 public class TypicodeLocalDataSource implements IPostsRepository {
 
     private static volatile TypicodeLocalDataSource INSTANCE;
@@ -51,12 +53,9 @@ public class TypicodeLocalDataSource implements IPostsRepository {
                 appExecutors.mainThread().execute(new Runnable() {
                     @Override
                     public void run() {
-                        if (postEntities.isEmpty()) {
-                            callback.onError(-1);
-                        } else {
-                            List<Post> postArrayList = PostsEntityDataMapper.getInstance().transform(postEntities, userEntities, commentsEntities);
-                            callback.onPostsLoaded(postArrayList);
-                        }
+                        Timber.d("Found %d posts", postEntities.size());
+                        List<Post> postArrayList = PostsEntityDataMapper.getInstance().transform(postEntities, userEntities, commentsEntities);
+                        callback.onPostsLoaded(postArrayList);
                     }
                 });
             }
@@ -72,21 +71,20 @@ public class TypicodeLocalDataSource implements IPostsRepository {
             @Override
             public void run() {
                 final PostEntity postEntity = typicodeDao.getPostById(postId);
-                if(postEntity != null) {
+                if (postEntity != null) {
+                    Timber.d("Found %s", postEntity);
+
                     final UserEntity userEntity = typicodeDao.getUserById(postEntity.getUserId());
                     final List<CommentEntity> commentsEntities = typicodeDao.getCommentsByPostId(postId);
                     appExecutors.mainThread().execute(new Runnable() {
                         @Override
                         public void run() {
-                            if (postEntity == null) {
-                                callback.onError(-1);
-                            } else {
-                                Post postArrayList = PostsEntityDataMapper.getInstance().transform(postEntity, userEntity, commentsEntities);
-                                callback.onPostLoaded(postArrayList);
-                            }
+                            Post postArrayList = PostsEntityDataMapper.getInstance().transform(postEntity, userEntity, commentsEntities);
+                            callback.onPostLoaded(postArrayList);
                         }
                     });
                 } else {
+                    Timber.w("Cannot find the post in local database");
                     callback.onError(-1);
                 }
             }
@@ -100,6 +98,7 @@ public class TypicodeLocalDataSource implements IPostsRepository {
         appExecutors.diskIO().execute(new Runnable() {
             @Override
             public void run() {
+                Timber.d("delete local database");
                 typicodeDao.deleteUsers();
                 typicodeDao.deletePosts();
                 typicodeDao.deleteComments();

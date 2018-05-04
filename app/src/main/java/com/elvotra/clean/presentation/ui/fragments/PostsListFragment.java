@@ -35,7 +35,7 @@ public class PostsListFragment extends Fragment implements PostsContract.View {
     @BindView(R.id.fragment_posts_list_recycler_view)
     RecyclerView postsRecyclerView;
     @BindView(R.id.fragment_posts_list_message)
-    TextView mLblMessage;
+    TextView errorMessage;
     @BindView(R.id.refresh_layout)
     ScrollChildSwipeRefreshLayout swipeRefreshLayout;
 
@@ -75,6 +75,7 @@ public class PostsListFragment extends Fragment implements PostsContract.View {
                 postsPresenter.loadPosts(true);
             }
         });
+        postsPresenter.loadPosts(true);
 
         return rootView;
 
@@ -83,7 +84,6 @@ public class PostsListFragment extends Fragment implements PostsContract.View {
     @Override
     public void onResume() {
         super.onResume();
-        postsPresenter.resume();
     }
 
     @Override
@@ -93,7 +93,7 @@ public class PostsListFragment extends Fragment implements PostsContract.View {
 
     @Override
     public void showPostsList(List<PostViewItem> postViewItems) {
-        mLblMessage.setVisibility(View.GONE);
+        errorMessage.setVisibility(View.GONE);
 
         postsRecyclerView.setVisibility(View.VISIBLE);
 
@@ -120,8 +120,8 @@ public class PostsListFragment extends Fragment implements PostsContract.View {
     @Override
     public void showNoResults() {
         postsRecyclerView.setVisibility(View.GONE);
-        mLblMessage.setVisibility(View.VISIBLE);
-        mLblMessage.setText(getString(R.string.no_posts));
+        errorMessage.setVisibility(View.VISIBLE);
+        errorMessage.setText(getString(R.string.no_posts));
     }
 
     @Override
@@ -136,11 +136,9 @@ public class PostsListFragment extends Fragment implements PostsContract.View {
 
     @Override
     public void showError(String message) {
-
         postsRecyclerView.setVisibility(View.GONE);
-        mLblMessage.setVisibility(View.VISIBLE);
-        mLblMessage.setText(message);
-
+        errorMessage.setVisibility(View.VISIBLE);
+        errorMessage.setText(message);
     }
 
     @Override

@@ -7,7 +7,7 @@ import com.elvotra.clean.domain.usecase.base.BaseUseCase;
 public class UseCaseHandler {
 
     private static UseCaseHandler INSTANCE;
-    private final UseCaseScheduler mUseCaseScheduler;
+    private final UseCaseScheduler useCaseScheduler;
 
     public static UseCaseHandler getInstance() {
         if (INSTANCE == null) {
@@ -18,7 +18,7 @@ public class UseCaseHandler {
 
     @VisibleForTesting
     public UseCaseHandler(UseCaseScheduler useCaseScheduler) {
-        mUseCaseScheduler = useCaseScheduler;
+        this.useCaseScheduler = useCaseScheduler;
     }
 
     public <T extends BaseUseCase.RequestValues, R extends BaseUseCase.ResponseValue> void execute(
@@ -26,7 +26,7 @@ public class UseCaseHandler {
         useCase.setRequestValues(values);
         useCase.setUseCaseCallback(new UiCallbackWrapper(callback, this));
 
-        mUseCaseScheduler.execute(new Runnable() {
+        useCaseScheduler.execute(new Runnable() {
             @Override
             public void run() {
                 useCase.run();
@@ -36,12 +36,12 @@ public class UseCaseHandler {
 
     public <V extends BaseUseCase.ResponseValue> void notifyResponse(final V response,
                                                                      final BaseUseCase.UseCaseCallback<V> useCaseCallback) {
-        mUseCaseScheduler.notifyResponse(response, useCaseCallback);
+        useCaseScheduler.notifyResponse(response, useCaseCallback);
     }
 
     private <V extends BaseUseCase.ResponseValue> void notifyError(int statusCode,
                                                                    final BaseUseCase.UseCaseCallback<V> useCaseCallback) {
-        mUseCaseScheduler.onError(statusCode, useCaseCallback);
+        useCaseScheduler.onError(statusCode, useCaseCallback);
     }
 
     private static final class UiCallbackWrapper<V extends BaseUseCase.ResponseValue> implements

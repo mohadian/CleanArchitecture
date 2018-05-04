@@ -7,7 +7,7 @@ import com.elvotra.clean.domain.usecase.base.BaseUseCase;
 import java.util.List;
 
 public class GetPostsUseCase extends BaseUseCase<GetPostsUseCase.RequestValues, GetPostsUseCase.ResponseValue> {
-    IPostsRepository repository;
+    private IPostsRepository repository;
 
     public GetPostsUseCase(IPostsRepository repository) {
         this.repository = repository;
