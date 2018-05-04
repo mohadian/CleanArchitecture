@@ -14,7 +14,7 @@ android {
 
     buildTypes {
         debug {
-            minifyEnabled true
+            minifyEnabled false
         }
 
         release {
@@ -57,16 +57,25 @@ dependencies {
     implementation "com.android.support.constraint:constraint-layout:$rootProject.ext.constraitLayoutVersion"
     implementation "com.google.guava:guava:$rootProject.guavaVersion"
 
-
-
     // Retrofit dependencies
     implementation "com.squareup.retrofit2:retrofit:$rootProject.ext.retrofitVersion"
     implementation "com.google.code.gson:gson:$rootProject.ext.gsonVersion"
     implementation "com.squareup.retrofit2:converter-gson:$rootProject.ext.retrofitVersion"
 
+    // Glide
     implementation "com.github.bumptech.glide:glide:$rootProject.ext.glideVersion"
 
-    // Room (use 1.1.0-beta2 for latest beta)
+    // Lottie animations
+    implementation "com.airbnb.android:lottie:$rootProject.ext.lottieVersion"
+
+    // Timber
+    implementation "com.jakewharton.timber:timber:$rootProject.ext.timberVersion"
+
+    // Binding
+    implementation "com.jakewharton:butterknife:$rootProject.butterknifeVersion"
+    annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.ext.butterknifeVersion"
+
+    // Room
     implementation "android.arch.persistence.room:runtime:$rootProject.ext.roomVersion"
     annotationProcessor "android.arch.persistence.room:compiler:$rootProject.ext.roomVersion"
 
@@ -100,8 +109,4 @@ dependencies {
     androidTestImplementation "com.android.support:recyclerview-v7:$rootProject.supportLibraryVersion"
     androidTestImplementation "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
     androidTestImplementation "com.android.support:design:$rootProject.supportLibraryVersion"
-
-    // Binding
-    implementation "com.jakewharton:butterknife:$rootProject.butterknifeVersion"
-    annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.ext.butterknifeVersion"
 }

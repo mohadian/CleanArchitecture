@@ -34,7 +34,7 @@ public class CommentsRecyclerAdapter
         @BindView(R.id.list_item_comment_user)
         TextView commentUser;
 
-        public ViewHolder(View item) {
+        ViewHolder(View item) {
             super(item);
 
             ButterKnife.bind(this, item);
@@ -72,7 +72,6 @@ public class CommentsRecyclerAdapter
     public int getItemCount() {
         return commentViewItems.size();
     }
-
 }
 
 

@@ -12,6 +12,9 @@
     <dimen name="post_item_margin">12dp</dimen>
     <dimen name="post_list_padding">8dp</dimen>
     <dimen name="comment_item_margin">8dp</dimen>
-    <dimen name="comment_item_margin_large">16dp</dimen>
+    <dimen name="comment_item_margin_large">10dp</dimen>
+    <dimen name="post_details_comment_item_padding">10dp</dimen>
     <dimen name="comment_item_avatar_size">100dp</dimen>
+    <dimen name="progress_view_size">220dp</dimen>
+    <dimen name="splash_animation_size">120dp</dimen>
 </resources>

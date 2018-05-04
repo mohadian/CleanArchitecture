@@ -1,6 +1,7 @@
 package com.elvotra.clean.presentation.ui.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.elvotra.clean.R;
 import com.elvotra.clean.presentation.contract.PostDetailsContract;
 import com.elvotra.clean.presentation.model.PostDetailsViewItem;
@@ -16,6 +18,7 @@ import com.elvotra.clean.presentation.ui.adapters.CommentsRecyclerAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 import static com.elvotra.clean.presentation.ui.activities.PostDetailsActivity.POST_ID;
 
@@ -26,13 +29,15 @@ public class PostDetailsFragment extends Fragment implements PostDetailsContract
     }
 
     private PostDetailsContract.IPostDetailsPresenter postDetailsPresenter;
-    private CommentsRecyclerAdapter commentsRecyclerAdapter;
-    private int postId;
 
+    @BindView(R.id.post_details_container)
+    View detailsContainer;
+    @BindView(R.id.post_details_progress)
+    LottieAnimationView postDetailsProgress;
     @BindView(R.id.post_details_title)
     TextView postTitle;
     @BindView(R.id.post_details_body)
-    TextView mLblOverview;
+    TextView postBody;
 
     @BindView(R.id.fragment_comments_list_recycler_view)
     RecyclerView postsRecyclerView;
@@ -56,7 +61,7 @@ public class PostDetailsFragment extends Fragment implements PostDetailsContract
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_post_details, container, false);
 
@@ -66,12 +71,20 @@ public class PostDetailsFragment extends Fragment implements PostDetailsContract
         postsRecyclerView.setLayoutManager(mLayoutManager);
 
         Bundle args = getArguments();
-        postId = args.getInt(POST_ID);
+        int postId = -1;
+        if (args != null) {
+            postId = args.getInt(POST_ID);
+        }
+
+        setupProgressAnimation();
 
         postDetailsPresenter.loadPost(postId);
 
         return rootView;
+    }
 
+    private void setupProgressAnimation() {
+        postDetailsProgress.setAnimation(R.raw.loading);
     }
 
     @Override
@@ -87,15 +100,15 @@ public class PostDetailsFragment extends Fragment implements PostDetailsContract
 
     @Override
     public void showPostDetails(PostDetailsViewItem postDetailsViewItem) {
+        Timber.d("Received the post details data");
+
+        detailsContainer.setVisibility(View.VISIBLE);
         postTitle.setText(postDetailsViewItem.getTitle());
-
-        mLblOverview.setText(postDetailsViewItem.getBody());
-
+        postBody.setText(postDetailsViewItem.getBody());
         errorMessage.setVisibility(View.GONE);
-
         postsRecyclerView.setVisibility(View.VISIBLE);
 
-        commentsRecyclerAdapter = new CommentsRecyclerAdapter(getContext(), postDetailsViewItem.getComments());
+        CommentsRecyclerAdapter commentsRecyclerAdapter = new CommentsRecyclerAdapter(getContext(), postDetailsViewItem.getComments());
 
         postsRecyclerView.setAdapter(commentsRecyclerAdapter);
 
@@ -112,26 +125,25 @@ public class PostDetailsFragment extends Fragment implements PostDetailsContract
     public void showNoResults() {
         postsRecyclerView.setVisibility(View.GONE);
         errorMessage.setVisibility(View.VISIBLE);
+        detailsContainer.setVisibility(View.GONE);
         errorMessage.setText(getString(R.string.no_posts));
     }
 
     @Override
     public void showProgress() {
-
+        postDetailsProgress.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
-
+        postDetailsProgress.setVisibility(View.GONE);
     }
 
     @Override
     public void showError(String message) {
-
         postsRecyclerView.setVisibility(View.GONE);
         errorMessage.setVisibility(View.VISIBLE);
         errorMessage.setText(message);
-
     }
 
     @Override

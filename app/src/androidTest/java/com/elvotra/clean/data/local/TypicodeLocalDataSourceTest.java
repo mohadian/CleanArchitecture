@@ -15,6 +15,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +24,9 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyList;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -95,16 +96,16 @@ public class TypicodeLocalDataSourceTest {
     }
 
     @Test
-    public void getPosts_shouldReturnError_whenPostsAvailable() {
+    public void getPosts_shouldReturnEmptyList_whenNoPostsAvailable() {
         localDataSource.getPosts(false, new IPostsRepository.LoadPostsCallback() {
             @Override
             public void onPostsLoaded(List<Post> posts) {
-                fail();
+                assertEquals(0, posts.size());
             }
 
             @Override
             public void onError(int statusCode) {
-                assertEquals(-1, statusCode);
+                fail();
             }
         });
     }
@@ -154,6 +155,7 @@ public class TypicodeLocalDataSourceTest {
     @Test
     public void deleteAllData_getPostsReturnEmptyList() {
         IPostsRepository.LoadPostsCallback mockLoadPostsCallback = mock(IPostsRepository.LoadPostsCallback.class);
+        ArgumentCaptor<List<Post>> captorListArgument = new ArgumentCaptor<>();
         List<Post> posts = createPostList(1, 1);
         localDataSource.savePosts(posts);
 
@@ -161,8 +163,9 @@ public class TypicodeLocalDataSourceTest {
 
         localDataSource.getPosts(false, mockLoadPostsCallback);
 
-        verify(mockLoadPostsCallback).onError(anyInt());
-        verify(mockLoadPostsCallback, never()).onPostsLoaded(anyList());
+        verify(mockLoadPostsCallback, never()).onError(anyInt());
+        verify(mockLoadPostsCallback).onPostsLoaded(captorListArgument.capture());
+        assertTrue(captorListArgument.getValue().isEmpty());
     }
 
     @Test
