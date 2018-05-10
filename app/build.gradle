@@ -1,4 +1,7 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -71,13 +74,10 @@ dependencies {
     // Timber
     implementation "com.jakewharton.timber:timber:$rootProject.ext.timberVersion"
 
-    // Binding
-    implementation "com.jakewharton:butterknife:$rootProject.butterknifeVersion"
-    annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.ext.butterknifeVersion"
-
     // Room
     implementation "android.arch.persistence.room:runtime:$rootProject.ext.roomVersion"
     annotationProcessor "android.arch.persistence.room:compiler:$rootProject.ext.roomVersion"
+    kapt "android.arch.persistence.room:compiler:$rootProject.ext.roomVersion"
 
     // Dependencies for local unit tests
     testImplementation "junit:junit:$rootProject.ext.junitVersion"
@@ -109,4 +109,5 @@ dependencies {
     androidTestImplementation "com.android.support:recyclerview-v7:$rootProject.supportLibraryVersion"
     androidTestImplementation "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
     androidTestImplementation "com.android.support:design:$rootProject.supportLibraryVersion"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

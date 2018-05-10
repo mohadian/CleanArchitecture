@@ -51,13 +51,13 @@ public class PostsRepositoryTest {
 
     @Before
     public void setup() {
-        PostsRepository.destroyInstance();
-        postsRepository = PostsRepository.getInstance(mockRemoteDataSource, mockLocalDataSource);
+        PostsRepository.Companion.destroyInstance();
+        postsRepository = PostsRepository.Companion.getInstance(mockRemoteDataSource, mockLocalDataSource);
     }
 
     @After
     public void cleanUp() {
-        PostsRepository.destroyInstance();
+        PostsRepository.Companion.destroyInstance();
     }
 
     @Test

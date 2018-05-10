@@ -16,11 +16,7 @@ import com.elvotra.clean.presentation.contract.PostDetailsContract;
 import com.elvotra.clean.presentation.model.PostDetailsViewItem;
 import com.elvotra.clean.presentation.ui.adapters.CommentsRecyclerAdapter;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import timber.log.Timber;
-
-import static com.elvotra.clean.presentation.ui.activities.PostDetailsActivity.POST_ID;
 
 public class PostDetailsFragment extends Fragment implements PostDetailsContract.View {
 
@@ -30,19 +26,13 @@ public class PostDetailsFragment extends Fragment implements PostDetailsContract
 
     private PostDetailsContract.IPostDetailsPresenter postDetailsPresenter;
 
-    @BindView(R.id.post_details_container)
-    View detailsContainer;
-    @BindView(R.id.post_details_progress)
-    LottieAnimationView postDetailsProgress;
-    @BindView(R.id.post_details_title)
-    TextView postTitle;
-    @BindView(R.id.post_details_body)
-    TextView postBody;
+    View post_details_container;
+    LottieAnimationView post_details_progress;
+    TextView post_details_title;
+    TextView post_details_body;
 
-    @BindView(R.id.fragment_comments_list_recycler_view)
-    RecyclerView postsRecyclerView;
-    @BindView(R.id.fragment_post_details_message)
-    TextView errorMessage;
+    RecyclerView fragment_comments_list_recycler_view;
+    TextView fragment_post_details_message;
 
     public PostDetailsFragment() {
     }
@@ -50,7 +40,7 @@ public class PostDetailsFragment extends Fragment implements PostDetailsContract
     public static PostDetailsFragment newInstance(int postId) {
         PostDetailsFragment fragment = new PostDetailsFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(POST_ID, postId);
+        bundle.putInt(com.elvotra.clean.presentation.ui.activities.PostDetailsActivity.Companion.getPOST_ID(), postId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -65,15 +55,13 @@ public class PostDetailsFragment extends Fragment implements PostDetailsContract
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_post_details, container, false);
 
-        ButterKnife.bind(this, rootView);
-
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-        postsRecyclerView.setLayoutManager(mLayoutManager);
+        fragment_comments_list_recycler_view.setLayoutManager(mLayoutManager);
 
         Bundle args = getArguments();
         int postId = -1;
         if (args != null) {
-            postId = args.getInt(POST_ID);
+            postId = args.getInt(com.elvotra.clean.presentation.ui.activities.PostDetailsActivity.Companion.getPOST_ID());
         }
 
         setupProgressAnimation();
@@ -84,7 +72,7 @@ public class PostDetailsFragment extends Fragment implements PostDetailsContract
     }
 
     private void setupProgressAnimation() {
-        postDetailsProgress.setAnimation(R.raw.loading);
+        post_details_progress.setAnimation(R.raw.loading);
     }
 
     @Override
@@ -99,18 +87,23 @@ public class PostDetailsFragment extends Fragment implements PostDetailsContract
     }
 
     @Override
+    public PostDetailsContract.IPostDetailsPresenter getPresenter(){
+        return postDetailsPresenter;
+    }
+
+    @Override
     public void showPostDetails(PostDetailsViewItem postDetailsViewItem) {
         Timber.d("Received the post details data");
 
-        detailsContainer.setVisibility(View.VISIBLE);
-        postTitle.setText(postDetailsViewItem.getTitle());
-        postBody.setText(postDetailsViewItem.getBody());
-        errorMessage.setVisibility(View.GONE);
-        postsRecyclerView.setVisibility(View.VISIBLE);
+        post_details_container.setVisibility(View.VISIBLE);
+        post_details_title.setText(postDetailsViewItem.getTitle());
+        post_details_body.setText(postDetailsViewItem.getBody());
+        fragment_post_details_message.setVisibility(View.GONE);
+        fragment_comments_list_recycler_view.setVisibility(View.VISIBLE);
 
         CommentsRecyclerAdapter commentsRecyclerAdapter = new CommentsRecyclerAdapter(getContext(), postDetailsViewItem.getComments());
 
-        postsRecyclerView.setAdapter(commentsRecyclerAdapter);
+        fragment_comments_list_recycler_view.setAdapter(commentsRecyclerAdapter);
 
         updateAvatar(postDetailsViewItem.getAvatar(), postDetailsViewItem.getUser());
     }
@@ -123,31 +116,33 @@ public class PostDetailsFragment extends Fragment implements PostDetailsContract
 
     @Override
     public void showNoResults() {
-        postsRecyclerView.setVisibility(View.GONE);
-        errorMessage.setVisibility(View.VISIBLE);
-        detailsContainer.setVisibility(View.GONE);
-        errorMessage.setText(getString(R.string.no_posts));
+        fragment_comments_list_recycler_view.setVisibility(View.GONE);
+        fragment_post_details_message.setVisibility(View.VISIBLE);
+        post_details_container.setVisibility(View.GONE);
+        fragment_post_details_message.setText(getString(R.string.no_posts));
     }
 
     @Override
     public void showProgress() {
-        postDetailsProgress.setVisibility(View.VISIBLE);
+        post_details_progress.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
-        postDetailsProgress.setVisibility(View.GONE);
+        post_details_progress.setVisibility(View.GONE);
     }
 
     @Override
     public void showError(String message) {
-        postsRecyclerView.setVisibility(View.GONE);
-        errorMessage.setVisibility(View.VISIBLE);
-        errorMessage.setText(message);
+        fragment_comments_list_recycler_view.setVisibility(View.GONE);
+        fragment_post_details_message.setVisibility(View.VISIBLE);
+        fragment_post_details_message.setText(message);
     }
 
     @Override
     public boolean isActive() {
         return isAdded();
     }
+
+
 }

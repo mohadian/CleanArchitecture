@@ -60,8 +60,8 @@ public class PostsEntityDataMapper {
     //endregion
 
     //region Data to Domain models
-    public List<Post> transform(List<PostEntity> postsEntities, List<UserEntity> userEntities, List<CommentEntity> commentsEntities) {
-        List<Post> result = new ArrayList<>(postsEntities.size());
+    public ArrayList<Post> transform(ArrayList<PostEntity> postsEntities, ArrayList<UserEntity> userEntities, List<CommentEntity> commentsEntities) {
+        ArrayList<Post> result = new ArrayList<>(postsEntities.size());
         Map<Integer, User> usersMap = createMap(userEntities);
         Map<Integer, List<Comment>> postComments = createPostCommentsMap(commentsEntities);
         for (int i = 0; i < postsEntities.size(); i++) {

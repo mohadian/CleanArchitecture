@@ -71,7 +71,7 @@ public class PostDetailsPresenterTest {
     @Test
     public void loadPost_shouldDisplayPost_whenPostAvailable() {
         post = DomainDataUtil.createSinglePost(1,1,1);
-        PostDetailsViewItem postDetailsViewItem = PostDetailsViewItemMapper.getInstance().transform(post);
+        PostDetailsViewItem postDetailsViewItem = PostDetailsViewItemMapper.Companion.getInstance().transform(post);
         ArgumentCaptor<PostDetailsViewItem> detailsViewItemArgumentCaptor = ArgumentCaptor.forClass(PostDetailsViewItem.class);
         when(mockView.isActive()).thenReturn(true);
         postsRepository.savePosts(Collections.singletonList(post));

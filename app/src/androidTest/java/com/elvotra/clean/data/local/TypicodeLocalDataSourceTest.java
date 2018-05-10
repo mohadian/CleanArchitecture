@@ -55,14 +55,14 @@ public class TypicodeLocalDataSourceTest {
                 .build();
         TypicodeDao typicodeDao = typicodeDatabase.typicodeDao();
 
-        TypicodeLocalDataSource.destroyInstance();
-        localDataSource = TypicodeLocalDataSource.getInstance(new SingleExecutors(), typicodeDao);
+        TypicodeLocalDataSource.Companion.destroyInstance();
+        localDataSource = TypicodeLocalDataSource.Companion.getInstance(new SingleExecutors(), typicodeDao);
     }
 
     @After
     public void cleanUp() {
         typicodeDatabase.close();
-        TypicodeLocalDataSource.destroyInstance();
+        TypicodeLocalDataSource.Companion.destroyInstance();
     }
 
     @Test
